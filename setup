@@ -1,33 +1,49 @@
 #!/bin/bash
 
-# v1.3 (non-github version)
+# I really hope this works now.
+# v1.3~regression1 (non-github version)
 # https://reddit.com/u/derpherp128 for support
 # MANY, many thanks to /u/ParadigmComplex for helping me throughout the whole process!
 # Thanks to xanax, CilanMan, /u/algebra123230, and /u/jojorino!
 
-set -e
+originalpath=$(pwd)
+log=$originalpath/FasterMelee/log.txt
 
-echo "tail -f $(pwd)/buildlog.txt for more info!"
+mkdir FasterMelee && cd FasterMelee
+echo "Downloading required replacement files..."
+curl -LO#  "https://cdn.discordapp.com/attachments/153678985321119745/278298757173346305/FMelee_req.tar.gz"
+echo "Extracting..."
+tar -xzf FMelee_req.tar.gz
+rm FMelee_req.tar.gz
 
-echo 'Downloading Faster Melee...'
-curl -LO "https://github.com/Ptomerty/FasterMelee/archive/master.tar.gz"
-echo 'Extracting...'
-tar -xzf master.tar.gz
-rm master.tar.gz
+echo "Cloning repo..."
+git clone https://github.com/Tinob/Ishiiruka &>>$log
+cd Ishiiruka
+echo "Switching to 4.4 (Win) commit..."
+git checkout 0b00f1f6267190a8bf9a3584497a35d8762eb0a9 &>>$log
 
-cd FasterMelee-master/build
+echo "Replacing CMakeLists..."
+rm CMakeLists.txt
+mv ../CMakeLists.txt .
+
+echo "Adding portable files..."
+mkdir build && cd build
+mv ../../Binaries .
 
 echo "cmaking..."
-cmake .. -DLINUX_LOCAL_DEV=true &>> buildlog.txt
+cmake .. -DLINUX_LOCAL_DEV=true &>>$log
 
 echo "Compiling...(Verbose, will take a while)"
-make 2>> buildlog.txt
+make 2>>$log
 
-echo "Cleaning up..." 
-rm buildlog.txt
+echo "Cleaning up..."
+rm $originalpath/FasterMelee/log.txt
 mv Binaries/ FMBinaries-tmp/
 mv FMBinaries-tmp/ /tmp/
 cd ../..
-mv /tmp/FMBinaries-tmp/* .
-rm -r FasterMelee-master /tmp/FMBinaries-tmp/
-echo "Done! Run ./dolphin-emu to launch."
+mkdir -p bin
+mv /tmp/FMBinaries-tmp/* ./bin/
+rm -rf /tmp/FMBinaries-tmp Ishiiruka #f required to remove git files
+ln -s FasterMelee/bin/dolphin-emu ../launch-faster-melee
+
+echo 'Done! Run ./launch-faster-melee to run!'
