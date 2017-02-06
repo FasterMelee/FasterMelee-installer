@@ -29,5 +29,5 @@ mv Binaries/ FMBinaries-tmp/
 mv FMBinaries-tmp/ /tmp/
 cd ../..
 mv /tmp/FMBinaries-tmp/* .
-rm -rf FasterMelee-master /tmp/FMBinaries-tmp/
+rm -r FasterMelee-master /tmp/FMBinaries-tmp/
 echo "Done! Run ./dolphin-emu to launch."
