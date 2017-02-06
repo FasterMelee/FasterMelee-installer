@@ -9,7 +9,9 @@ set -e
 
 echo "tail -f $(pwd)/buildlog.txt for more info!"
 
+echo 'Downloading Faster Melee...'
 curl -LO "https://github.com/Ptomerty/FasterMelee/archive/master.tar.gz"
+echo 'Extracting...'
 tar -xzf master.tar.gz
 rm master.tar.gz
 
@@ -23,8 +25,9 @@ make 2>> buildlog.txt
 
 echo "Cleaning up..." 
 rm buildlog.txt
-mv Binaries /tmp/FMBinaries-tmp
-cd ..
-rm -r *
+mv Binaries/ FMBinaries-tmp/
+mv FMBinaries-tmp/ /tmp/
+cd ../..
 mv /tmp/FMBinaries-tmp/* .
+rm -rf FasterMelee-master /tmp/FMBinaries-tmp/
 echo "Done! Run ./dolphin-emu to launch."
