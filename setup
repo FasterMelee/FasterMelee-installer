@@ -6,12 +6,14 @@
 # MANY, many thanks to /u/ParadigmComplex for helping me throughout the whole process!
 # Thanks to xanax, CilanMan, /u/algebra123230, and /u/jojorino!
 
+set -e
+
 originalpath=$(pwd)
 log=$originalpath/FasterMelee/log.txt
 
 mkdir FasterMelee && cd FasterMelee
 echo "Downloading required replacement files..."
-curl -LO#  "https://cdn.discordapp.com/attachments/153678985321119745/278298757173346305/FMelee_req.tar.gz"
+curl -LO#  "https://cdn.discordapp.com/attachments/153678985321119745/278299726368210944/FMelee_req.tar.gz"
 echo "Extracting..."
 tar -xzf FMelee_req.tar.gz
 rm FMelee_req.tar.gz
