@@ -9,11 +9,10 @@ In general, you need g++ (version >= 4.9), git, cmake, make, libopenal, and libs
 
 ##To use:
 
-`curl -LO "https://github.com/Ptomerty/FasterMelee-installer/raw/master/setup"`
-
-`chmod +x setup`
-
-`./setup`
+```bash
+curl -LO "https://github.com/Ptomerty/FasterMelee-installer/raw/master/setup"
+bash setup
+```
 
 ##Changelog
 v1.3~reg1: Final version, attempting to avoid cloning Ishiiruka causes unfixable errors with netplay.
