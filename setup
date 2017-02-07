@@ -10,6 +10,9 @@ set -e
 
 originalpath=$(pwd)
 log=$originalpath/FasterMelee/log.txt
+commithash="0b00f1f6267190a8bf9a3584497a35d8762eb0a9"
+
+echo "tail -f $log for more info!"
 
 mkdir FasterMelee && cd FasterMelee
 echo "Downloading required replacement files..."
@@ -22,7 +25,7 @@ echo "Cloning repo..."
 git clone https://github.com/Tinob/Ishiiruka &>>$log
 cd Ishiiruka
 echo "Switching to 4.4 (Win) commit..."
-git checkout 0b00f1f6267190a8bf9a3584497a35d8762eb0a9 &>>$log
+git checkout $commithash &>>$log
 
 echo "Replacing CMakeLists..."
 rm CMakeLists.txt
