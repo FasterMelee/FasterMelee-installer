@@ -8,8 +8,8 @@
 
 set -e
 
-originalpath=$(pwd)
-log=$originalpath/FasterMelee/log.txt
+originalpath="$(pwd)"
+log="$originalpath/FasterMelee/log.txt"
 commithash="0b00f1f6267190a8bf9a3584497a35d8762eb0a9"
 
 echo "tail -f $log for more info!"
@@ -22,10 +22,10 @@ tar -xzf FMelee_req.tar.gz
 rm FMelee_req.tar.gz
 
 echo "Cloning repo..."
-git clone https://github.com/Tinob/Ishiiruka &>>$log
+git clone https://github.com/Tinob/Ishiiruka &>>"$log"
 cd Ishiiruka
 echo "Switching to 4.4 (Win) commit..."
-git checkout $commithash &>>$log
+git checkout $commithash &>>"$log"
 
 echo "Replacing CMakeLists..."
 rm CMakeLists.txt
@@ -36,13 +36,13 @@ mkdir build && cd build
 mv ../../Binaries .
 
 echo "cmaking..."
-cmake .. -DLINUX_LOCAL_DEV=true &>>$log
+cmake .. -DLINUX_LOCAL_DEV=true &>>"$log"
 
 echo "Compiling...(Verbose, will take a while)"
-make 2>>$log
+make 2>>"$log"
 
 echo "Cleaning up..."
-rm $originalpath/FasterMelee/log.txt
+rm "$originalpath/FasterMelee/log.txt"
 mv Binaries/ FMBinaries-tmp/
 mv FMBinaries-tmp/ /tmp/
 cd ../..
