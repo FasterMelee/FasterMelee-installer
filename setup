@@ -43,12 +43,9 @@ make 2>>"$log"
 
 echo "Cleaning up..."
 rm "$originalpath/FasterMelee/log.txt"
-mv Binaries/ FMBinaries-tmp/
-mv FMBinaries-tmp/ /tmp/
 cd ../..
-mkdir -p bin
-mv /tmp/FMBinaries-tmp/* ./bin/
-rm -rf /tmp/FMBinaries-tmp Ishiiruka #f required to remove git files
+mv Ishiiruka/build/Binaries/ bin/
+rm -rf Ishiiruka # -f required to remove git files
 ln -s FasterMelee/bin/dolphin-emu ../launch-faster-melee
 
 echo 'Done! Run ./launch-faster-melee to run!'
