@@ -14,7 +14,7 @@ commithash="0b00f1f6267190a8bf9a3584497a35d8762eb0a9"
 
 echo "tail -f $log for more info!"
 
-mkdir FasterMelee && cd FasterMelee
+mkdir -p FasterMelee && cd FasterMelee
 echo "Downloading required replacement files..."
 curl -LO#  "https://cdn.discordapp.com/attachments/153678985321119745/278299726368210944/FMelee_req.tar.gz"
 echo "Extracting..."
