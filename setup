@@ -21,7 +21,7 @@ echo "Extracting..."
 tar -xzf FMelee_req.tar.gz
 rm FMelee_req.tar.gz
 
-echo "Cloning repo..."
+echo "Cloning repo (may take a while)..."
 git clone https://github.com/Tinob/Ishiiruka
 cd Ishiiruka
 echo "Switching to 4.4 (Win) commit..."
