@@ -17,8 +17,10 @@ bash setup
 
 ##Changelog
 v1.3~reg1: Final version, attempting to avoid cloning Ishiiruka causes unfixable errors with netplay.
+
 v1.4: Added /bin/sh support, works on debian now; changed to wget Credit: /u/folfess.
 
 ###Thanks to:
 /u/ParadigmComplex. Seriously could not have done it without this guy.
+
 Also thanks to xanax, CilanMan, /u/algebra123230, /u/folfess, and /u/jojorino!

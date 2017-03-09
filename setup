@@ -1,22 +1,16 @@
-#!/bin/bash
-
-# I really hope this works now.
-# v1.3~regression1 (non-github version)
-# https://reddit.com/u/derpherp128 for support
-# MANY, many thanks to /u/ParadigmComplex for helping me throughout the whole process!
-# Thanks to xanax, CilanMan, /u/algebra123230, and /u/jojorino!
+#!/bin/sh
 
 set -e
 
-originalpath="$(pwd)"
-log="$originalpath/FasterMelee/log.txt"
-commithash="0b00f1f6267190a8bf9a3584497a35d8762eb0a9"
+ORIGINALPATH="$PWD"
+LOG="$ORIGINALPATH/FasterMelee/log.txt"
+COMMITHASH="0b00f1f6267190a8bf9a3584497a35d8762eb0a9"
 
-echo "tail -f $log for more info!"
+echo "tail -f $LOG for more info!"
 
 mkdir -p FasterMelee && cd FasterMelee
 echo "Downloading required replacement files..."
-curl -LO#  "https://cdn.discordapp.com/attachments/153678985321119745/278299726368210944/FMelee_req.tar.gz"
+wget "https://cdn.discordapp.com/attachments/153678985321119745/278299726368210944/FMelee_req.tar.gz"
 echo "Extracting..."
 tar -xzf FMelee_req.tar.gz
 rm FMelee_req.tar.gz
@@ -25,7 +19,7 @@ echo "Cloning repo (may take a while)..."
 git clone https://github.com/Tinob/Ishiiruka
 cd Ishiiruka
 echo "Switching to 4.4 (Win) commit..."
-git checkout $commithash &>>"$log"
+git checkout $COMMITHASH >>"$LOG" 2>&1
 
 echo "Replacing CMakeLists..."
 rm CMakeLists.txt
@@ -36,13 +30,13 @@ mkdir build && cd build
 mv ../../Binaries .
 
 echo "cmaking..."
-cmake .. -DLINUX_LOCAL_DEV=true &>>"$log"
+cmake .. -DLINUX_LOCAL_DEV=true >>"$LOG" 2>&1
 
 echo "Compiling...(Verbose, will take a while)"
-make 2>>"$log"
+make 2>>"$LOG"
 
 echo "Cleaning up..."
-rm "$originalpath/FasterMelee/log.txt"
+rm "$ORIGINALPATH/FasterMelee/log.txt"
 cd ../..
 mv Ishiiruka/build/Binaries/ bin/
 rm -rf Ishiiruka # -f required to remove git files
