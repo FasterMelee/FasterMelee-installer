@@ -1,11 +1,5 @@
 #!/bin/sh
 
-# I really hope this works now.
-# v1.3~regression1 (non-github version)
-# https://reddit.com/u/derpherp128 for support
-# MANY, many thanks to /u/ParadigmComplex for helping me throughout the whole process!
-# Thanks to xanax, CilanMan, /u/algebra123230, and /u/jojorino!
-
 set -e
 
 ORIGINALPATH="$PWD"
