@@ -10,10 +10,10 @@ echo "tail -f $LOG for more info!"
 
 mkdir -p FasterMelee && cd FasterMelee
 echo "Downloading required replacement files..."
-wget "https://cdn.discordapp.com/attachments/153678985321119745/278299726368210944/FMelee_req.tar.gz"
+wget "https://github.com/Ptomerty/FasterMelee-installer/raw/master/FasterMelee_requiredFiles.tar.gz"
 echo "Extracting..."
-tar -xzf FMelee_req.tar.gz
-rm FMelee_req.tar.gz
+tar -xzf FasterMelee_requiredFiles.tar.gz
+rm FasterMelee_requiredFiles.tar.gz
 
 echo "Cloning repo (may take a while)..."
 git clone https://github.com/Tinob/Ishiiruka
@@ -22,8 +22,10 @@ echo "Switching to 4.4 (Win) commit..."
 git checkout $COMMITHASH >>"$LOG" 2>&1
 
 echo "Replacing CMakeLists..."
-rm CMakeLists.txt
 mv ../CMakeLists.txt .
+
+echo "Replacing RasterFont.cpp..."
+mv ../RasterFont.cpp Source/Core/VideoBackends/OGL/RasterFont.cpp
 
 echo "Adding portable files..."
 mkdir build && cd build
