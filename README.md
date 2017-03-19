@@ -1,6 +1,7 @@
 # Faster Melee v4.4 Installer for Linux
 
-Script for compiling Faster Melee v4.4 on Linux! FULLY Tested on Ubuntu 16.10 (including netplay this time).
+Script for compiling Faster Melee v4.4 on Linux! FULLY Tested on Ubuntu 16.10 (including netplay this time). Also tested on Arch Linux.
+
 Contact /u/derpherp128 on Reddit for support.
 
 ## Dependencies needed (install these first!)
@@ -26,3 +27,9 @@ v1.5: Moved required files to GitHub for easier updates, edited RasterFont.cpp t
 /u/ParadigmComplex. Seriously could not have done it without this guy.
 
 Also thanks to xanax, CilanMan, /u/algebra123230, /u/folfess, and /u/jojorino!
+
+### Other resources:
+
+[AUR package for Faster Melee](https://aur.archlinux.org/packages/dolphin-emu-faster-melee/)
+
+[Ubuntu 16.04 .deb for Faster Melee](https://github.com/ccl2of4/dolphin-emu-faster-melee-packaging/releases)
