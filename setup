@@ -10,7 +10,7 @@ echo "tail -f $LOG for more info!"
 
 mkdir -p FasterMelee && cd FasterMelee
 echo "Downloading required replacement files..."
-wget "https://github.com/Ptomerty/FasterMelee-installer/raw/RasterFont-patch/FasterMelee_requiredFiles.tar.gz"
+wget "https://github.com/Ptomerty/FasterMelee-installer/raw/master/FasterMelee_requiredFiles.tar.gz"
 echo "Extracting..."
 tar -xzf FasterMelee_requiredFiles.tar.gz
 rm FasterMelee_requiredFiles.tar.gz
