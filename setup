@@ -5,21 +5,23 @@ set -e
 ORIGINALPATH="$PWD"
 LOG="$ORIGINALPATH/FasterMelee/log.txt"
 COMMITHASH="d462ca38724db65d7f92f3edbd16b6657291e420"
-REPLACEFILE="https://github.com/Ptomerty/FasterMelee-installer/raw/5.0rc/FM_reqFiles.tar.gz"
+REPLACEFILENAME="FM_reqFiles.tar.gz"
+REPLACEFILELINk="https://github.com/Ptomerty/FasterMelee-installer/raw/5.0rc/$REPLACEFILENAME"
+
 
 echo "tail -f $LOG for more info!"
 
 mkdir -p FasterMelee && cd FasterMelee
 echo "Downloading required replacement files..."
-wget $REPLACEFILE
+wget $REPLACEFILELINK
 echo "Extracting..."
-tar -xzf FM_reqFiles.tar.gz
-rm FM_reqFiles.tar.gz
+tar -xzf $REPLACEFILENAME
+rm $REPLACEFILENAME
 
 echo "Cloning repo (may take a while)..."
 git clone https://github.com/Tinob/Ishiiruka
 cd Ishiiruka
-echo "Switching to 4.4 (Win) commit..."
+echo "Switching to latest commit..."
 git checkout $COMMITHASH >>"$LOG" 2>&1
 
 echo "Adding portable files..."
