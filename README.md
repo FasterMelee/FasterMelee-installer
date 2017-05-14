@@ -1,8 +1,10 @@
 # Faster Melee Installer for Linux
 
-Script for compiling Faster Melee v4.4 on Linux! FULLY Tested on Ubuntu 16.10 (including netplay this time). Also tested on Arch Linux.
+A script for compiling the latest version of Faster Melee (with netplay support) on various Linux distributions.
 
-Contact /u/derpherp128 on Reddit for support.
+Currently tested on Arch and Ubuntu 17.04.
+
+[Join the official Faster Melee Discord Channel for support!](https://discord.gg/h6C4tCj)
 
 ## Dependencies needed (install these first!)
 See [this page](https://wiki.dolphin-emu.org/index.php?title=Building_Dolphin_on_Linux) for what exactly your distro needs!
