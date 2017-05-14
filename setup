@@ -6,8 +6,7 @@ ORIGINALPATH="$PWD"
 LOG="$ORIGINALPATH/FasterMelee/log.txt"
 COMMITHASH="d462ca38724db65d7f92f3edbd16b6657291e420"
 REPLACEFILENAME="FM_reqFiles.tar.gz"
-REPLACEFILELINk="https://github.com/Ptomerty/FasterMelee-installer/raw/5.0rc/$REPLACEFILENAME"
-
+REPLACEFILELINK="https://github.com/Ptomerty/FasterMelee-installer/raw/5.0rc/$REPLACEFILENAME"
 
 echo "tail -f $LOG for more info!"
 
