@@ -1,4 +1,4 @@
-# Faster Melee v4.4 Installer for Linux
+# Faster Melee Installer for Linux
 
 Script for compiling Faster Melee v4.4 on Linux! FULLY Tested on Ubuntu 16.10 (including netplay this time). Also tested on Arch Linux.
 
@@ -9,10 +9,10 @@ See [this page](https://wiki.dolphin-emu.org/index.php?title=Building_Dolphin_on
 
 In general, you need g++ (version >= 4.9), git, build-essential, cmake, make, libgl-mesa-dev (or equivalent), libopenal, and libsoundtouch!
 
-## To use:
+## To use (temporary):
 
 ```bash
-wget "https://github.com/Ptomerty/FasterMelee-installer/raw/master/setup"
+wget "https://github.com/Ptomerty/FasterMelee-installer/raw/5.0rc/setup"
 bash setup
 ```
 
@@ -23,6 +23,7 @@ v1.4: Added /bin/sh support, works on debian now; changed to wget Credit: /u/fol
 
 v1.5: Moved required files to GitHub for easier updates, edited RasterFont.cpp to prevent error. Credit: Mystro256, /u/74aaa92.
 
+v1.6: 5.0 support.
 ### Thanks to:
 /u/ParadigmComplex. Seriously could not have done it without this guy.
 
