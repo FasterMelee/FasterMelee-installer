@@ -4,28 +4,24 @@ set -e
 
 ORIGINALPATH="$PWD"
 LOG="$ORIGINALPATH/FasterMelee/log.txt"
-COMMITHASH="0b00f1f6267190a8bf9a3584497a35d8762eb0a9"
+COMMITHASH="d462ca38724db65d7f92f3edbd16b6657291e420"
+REPLACEFILE="https://github.com/Ptomerty/FasterMelee-installer/raw/master/FasterMelee_requiredFiles.tar.gz"
+
 
 echo "tail -f $LOG for more info!"
 
 mkdir -p FasterMelee && cd FasterMelee
 echo "Downloading required replacement files..."
-wget "https://github.com/Ptomerty/FasterMelee-installer/raw/master/FasterMelee_requiredFiles.tar.gz"
+wget $REPLACEFILE
 echo "Extracting..."
-tar -xzf FasterMelee_requiredFiles.tar.gz
-rm FasterMelee_requiredFiles.tar.gz
+tar -xzf FM_reqFiles.tar.gz
+rm FM_reqFiles.tar.gz
 
 echo "Cloning repo (may take a while)..."
 git clone https://github.com/Tinob/Ishiiruka
 cd Ishiiruka
 echo "Switching to 4.4 (Win) commit..."
 git checkout $COMMITHASH >>"$LOG" 2>&1
-
-echo "Replacing CMakeLists..."
-mv ../CMakeLists.txt .
-
-echo "Replacing RasterFont.cpp..."
-mv ../RasterFont.cpp Source/Core/VideoBackends/OGL/RasterFont.cpp
 
 echo "Adding portable files..."
 mkdir build && cd build
@@ -35,7 +31,7 @@ echo "cmaking..."
 cmake .. -DLINUX_LOCAL_DEV=true >>"$LOG" 2>&1
 
 echo "Compiling...(Verbose, will take a while)"
-make 2>>"$LOG"
+make 2>>"$LOG" #gets rid of errors as to not cause confusion
 
 echo "Cleaning up..."
 rm "$ORIGINALPATH/FasterMelee/log.txt"
