@@ -1,6 +1,6 @@
 # Faster Melee Installer for Linux
 
-A script for compiling the latest version of Faster Melee (with netplay support) on various Linux distributions.
+A script for compiling the latest version of Faster Melee (currently **5.0.3** with netplay support) on various Linux distributions.
 
 Currently tested on Arch and Ubuntu 17.04.
 
@@ -14,7 +14,7 @@ In general, you need g++ (version >= 4.9), git, build-essential, cmake, make, li
 ## To use (temporary):
 
 ```bash
-wget "https://github.com/Ptomerty/FasterMelee-installer/raw/5.0rc/setup"
+wget "https://github.com/Ptomerty/FasterMelee-installer/raw/master/setup"
 bash setup
 ```
 
@@ -25,7 +25,8 @@ v1.4: Added /bin/sh support, works on debian now; changed to wget Credit: /u/fol
 
 v1.5: Moved required files to GitHub for easier updates, edited RasterFont.cpp to prevent error. Credit: Mystro256, /u/74aaa92.
 
-v1.6: 5.0 support.
+v1.6: 5.0.3 support.
+
 ### Thanks to:
 /u/ParadigmComplex. Seriously could not have done it without this guy.
 
