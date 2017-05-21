@@ -11,7 +11,7 @@ See [this page](https://wiki.dolphin-emu.org/index.php?title=Building_Dolphin_on
 
 In general, you need g++ (version >= 4.9), git, build-essential, cmake, make, libgl-mesa-dev (or equivalent), libopenal, and libsoundtouch!
 
-## To use (temporary):
+## To use:
 
 ```bash
 wget "https://github.com/Ptomerty/FasterMelee-installer/raw/master/setup"
