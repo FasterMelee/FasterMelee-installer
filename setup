@@ -16,7 +16,9 @@ if [ ! "$RESP" = "y" ]; then
 	exit
 else
 	echo "tail -f $LOG for more info!"
-	
+
+	rm -r FasterMelee/ launch-faster-melee
+
 	mkdir FasterMelee && cd FasterMelee
 	echo "Downloading required replacement files..."
 	wget $REPLACEFILELINK
