@@ -13,10 +13,17 @@ In general, you need g++ (version >= 4.9), git, build-essential, cmake, make, li
 
 DEBIAN JESSIE users note: `libavformat-dev` must be installed from jessie-backports to avoid errors.
 
-## To use:
+## To use (fresh install into FasterMelee):
 
 ```bash
 wget "https://github.com/Ptomerty/FasterMelee-installer/raw/master/setup"
+bash setup
+```
+
+## To upgrade:
+
+```bash
+wget "https://github.com/Ptomerty/FasterMelee-installer/raw/master/setup_upgrade"
 bash setup
 ```
 
