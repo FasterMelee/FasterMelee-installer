@@ -29,7 +29,7 @@ bash setup
 
 ## Changelog
 
-v1.6.1: Now only clones the required netplay commit, saving over 200MB of downloads: thanks a lot [cloewtec!](https://github.com/cloewtec)
+v1.6.1: Now only clones the required netplay commit, reducing the amount of data to download by over 200MB: thanks a lot [cloewtec!](https://github.com/cloewtec)
 
 v1.6: Latest version changed to 5.0.3. 
 
