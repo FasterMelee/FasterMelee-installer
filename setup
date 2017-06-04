@@ -17,6 +17,9 @@ echo "Extracting..."
 tar -xzf $REPLACEFILENAME
 rm $REPLACEFILENAME
 
+echo "Adding adapter support (requires sudo permissions)..."
+bash adaptersetup
+
 echo "Cloning repo (may take a while)..."
 git clone https://github.com/Tinob/Ishiiruka
 cd Ishiiruka
@@ -41,4 +44,5 @@ rm -rf Ishiiruka # -f required to remove git files
 ln -s FasterMelee/bin/dolphin-emu ../launch-faster-melee
 
 echo 'Done! Run ./launch-faster-melee to run!'
+echo 'Make sure to unplug and replug your adapter before opening Dolphin!'
 
