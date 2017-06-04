@@ -20,7 +20,6 @@ rm $REPLACEFILENAME
 echo "Cloning repo (may take a while)..."
 mkdir Ishiiruka && cd Ishiiruka
 git init && git fetch --depth=1 https://github.com/Tinob/Ishiiruka :$COMMITHASH
-cd Ishiiruka
 echo "Switching to latest commit..."
 git checkout $COMMITHASH >>"$LOG" 2>&1
 
