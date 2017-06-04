@@ -1,0 +1,4 @@
+#!/bin/sh
+
+sudo mv ../../51-gcadapter.rules /etc/udev/rules.d/51-gcadapter.rules
+sudo udevadm control --reload-rules
