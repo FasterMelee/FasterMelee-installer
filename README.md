@@ -28,13 +28,18 @@ bash setup
 ```
 
 ## Changelog
+
+v1.6.1: Now only clones the required netplay commit, saving over 200MB of downloads: thanks a lot [cloewtec!](https://github.com/cloewtec)
+
+v1.6: Latest version changed to 5.0.3. 
+
+v1.5: Moved replacement files to GitHub for easier updates, edited RasterFont.cpp to prevent error. Credit: Mystro256, /u/74aaa92.
+
+v1.4: Added general POSIX support, works on most distros now; changed libcurl to wget Credit: /u/folfess.
+
 v1.3~reg1: Final version, attempting to avoid cloning Ishiiruka causes unfixable errors with netplay.
 
-v1.4: Added general POSIX support, works on Debian now; changed libcurl to wget Credit: /u/folfess.
 
-v1.5: Moved required files to GitHub for easier updates, edited RasterFont.cpp to prevent error. Credit: Mystro256, /u/74aaa92.
-
-v1.6: 5.0.3 support.
 
 ### Thanks to:
 /u/ParadigmComplex. Seriously could not have done it without this guy.
