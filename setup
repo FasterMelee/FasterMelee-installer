@@ -17,6 +17,9 @@ echo "Extracting..."
 tar -xzf $REPLACEFILENAME
 rm $REPLACEFILENAME
 
+echo "Adding adapter support (requires sudo permissions)"
+bash adapterinstall
+
 echo "Cloning repo (may take a while)..."
 git clone https://github.com/Tinob/Ishiiruka
 cd Ishiiruka
