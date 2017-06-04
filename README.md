@@ -22,6 +22,8 @@ bash setup
 
 ## To upgrade:
 
+Note that this does not reinstall adapter rules and will delete your old FasterMelee folder!
+
 ```bash
 wget "https://github.com/Ptomerty/FasterMelee-installer/raw/master/setup_upgrade"
 bash setup
