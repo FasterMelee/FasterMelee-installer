@@ -4,9 +4,10 @@ set -e
 
 ORIGINALPATH="$PWD"
 LOG="$ORIGINALPATH/FasterMelee/log.txt"
-COMMITHASH="d462ca38724db65d7f92f3edbd16b6657291e420"
+COMMITHASH="dd88b80e231f79e2f257dfe793adfe5a4431ec8d"
 REPLACEFILENAME="FM_reqFiles.tar.gz"
 REPLACEFILELINK="https://github.com/Ptomerty/FasterMelee-installer/raw/master/$REPLACEFILENAME"
+GITCLONELINK="https://github.com/HannesMann/Ishiiruka"
 
 echo "tail -f $LOG for more info!"
 
@@ -21,7 +22,7 @@ echo "Adding adapter support (requires sudo permissions)..."
 bash adaptersetup
 
 echo "Cloning repo (may take a while)..."
-git clone https://github.com/Tinob/Ishiiruka
+git clone $GITCLONELINK
 cd Ishiiruka
 echo "Switching to latest commit..."
 git checkout $COMMITHASH >>"$LOG" 2>&1
