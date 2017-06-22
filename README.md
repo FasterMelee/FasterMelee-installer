@@ -2,6 +2,8 @@
 
 A script for compiling the latest version of Faster Melee (currently **5.5** with netplay support) on various Linux distributions.
 
+### **SmashLadder users on 5.0.3: Please see your instructions below!**
+
 Currently tested on Arch and Ubuntu 17.04. Older versions can be found under the "legacy" branch.
 
 [Join the official Faster Melee Discord Channel for support!](https://discord.gg/h6C4tCj)
@@ -13,20 +15,27 @@ In general, you need g++ (version >= 4.9), git, build-essential, cmake, make, li
 
 DEBIAN JESSIE users note: `libavformat-dev` must be installed from jessie-backports to avoid errors.
 
-## To use (fresh install into FasterMelee):
+## SmashLadder users on 5.0.3: 
 
-```bash
+```sh
+wget "https://github.com/Ptomerty/FasterMelee-installer/blob/legacy/5.0.3/setup"
+sh setup
+```
+
+## To use (fresh install into FasterMelee/):
+
+```sh
 wget "https://github.com/Ptomerty/FasterMelee-installer/raw/master/setup"
-bash setup
+sh setup
 ```
 
 ## To upgrade:
 
 Note that this does not reinstall adapter rules and will delete your old FasterMelee folder!
 
-```bash
+```sh
 wget "https://github.com/Ptomerty/FasterMelee-installer/raw/master/setup_upgrade"
-bash setup
+sh setup
 ```
 
 ## Changelog
