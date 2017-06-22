@@ -31,7 +31,7 @@ bash setup
 
 ## Changelog
 
-v1.7: 5.5 support.
+v1.7: 5.5 support, added adapter setup support, later improved by /u/folfess.
 
 v1.6: 5.0.3 support.
 
