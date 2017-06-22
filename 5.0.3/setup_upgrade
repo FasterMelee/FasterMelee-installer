@@ -1,0 +1,53 @@
+#!/bin/sh
+
+set -e
+
+ORIGINALPATH="$PWD"
+LOG="$ORIGINALPATH/FasterMelee/log.txt"
+COMMITHASH="d462ca38724db65d7f92f3edbd16b6657291e420"
+REPLACEFILENAME="FM_reqFiles.tar.gz"
+REPLACEFILELINK="https://github.com/Ptomerty/FasterMelee-installer/raw/master/$REPLACEFILENAME"
+
+echo "Warning! This script will erase all previous Faster Melee installations! Are you sure you want to continue? (y/n) "
+read -r RESP
+
+if [ ! "$RESP" = "y" ]; then
+	echo "Exiting..."
+	exit
+else
+	echo "tail -f $LOG for more info!"
+
+	rm -r FasterMelee/ launch-faster-melee
+
+	mkdir FasterMelee && cd FasterMelee
+	echo "Downloading required replacement files..."
+	wget $REPLACEFILELINK
+	echo "Extracting..."
+	tar -xzf $REPLACEFILENAME
+	rm $REPLACEFILENAME
+	
+	echo "Cloning repo (may take a while)..."
+	git clone https://github.com/Tinob/Ishiiruka
+	cd Ishiiruka
+	echo "Switching to latest commit..."
+	git checkout $COMMITHASH >>"$LOG" 2>&1
+	
+	echo "Adding portable files..."
+	mkdir build && cd build
+	mv ../../Binaries .
+	
+	echo "cmaking..."
+	cmake .. -DLINUX_LOCAL_DEV=true >>"$LOG" 2>&1
+	
+	echo "Compiling...(Verbose, will take a while)"
+	make 2>>"$LOG" #gets rid of errors as to not cause confusion
+	
+	echo "Cleaning up..."
+	rm "$ORIGINALPATH/FasterMelee/log.txt"
+	cd ../..
+	mv Ishiiruka/build/Binaries/ bin/
+	rm -rf Ishiiruka # -f required to remove git files
+	ln -s FasterMelee/bin/dolphin-emu ../launch-faster-melee
+	
+	echo 'Done! Run ./launch-faster-melee to run!'
+fi
