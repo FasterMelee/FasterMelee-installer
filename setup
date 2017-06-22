@@ -19,7 +19,7 @@ tar -xzf $REPLACEFILENAME
 rm $REPLACEFILENAME
 
 echo "Adding adapter support (requires sudo permissions)..."
-bash adaptersetup
+sh adaptersetup
 
 echo "Cloning repo (may take a while)..."
 git clone $GITCLONELINK

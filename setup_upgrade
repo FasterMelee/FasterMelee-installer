@@ -9,7 +9,7 @@ REPLACEFILENAME="FM_reqFiles.tar.gz"
 REPLACEFILELINK="https://github.com/Ptomerty/FasterMelee-installer/raw/master/$REPLACEFILENAME"
 GITCLONELINK="https://github.com/HannesMann/Ishiiruka"
 
-echo "Warning! This script will erase all previous Faster Melee installations! Are you sure you want to continue? (y/n) "
+echo "Warning! This script will erase all previous Faster Melee files in the current directory! Are you sure you want to continue? (y/n) "
 read -r RESP
 
 if [ ! "$RESP" = "y" ]; then
