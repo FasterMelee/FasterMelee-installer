@@ -18,7 +18,7 @@ DEBIAN JESSIE users note: `libavformat-dev` must be installed from jessie-backpo
 ## SmashLadder users on 5.0.3: 
 
 ```sh
-wget "https://github.com/Ptomerty/FasterMelee-installer/blob/legacy/5.0.3/setup"
+wget "https://github.com/Ptomerty/FasterMelee-installer/raw/legacy/5.0.3/setup"
 sh setup
 ```
 
