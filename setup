@@ -2,11 +2,10 @@
 
 set -e
 
+REPLACEFILELINK=""
+FMVERSION="" #just defining
 COMMITHASH="dd88b80e231f79e2f257dfe793adfe5a4431ec8d"
-REPLACEFILENAME="FM_reqFiles.tar.gz"
-REPLACEFILELINK="https://github.com/Ptomerty/FasterMelee-installer/raw/master/$REPLACEFILENAME"
 GITCLONELINK="https://github.com/HannesMann/Ishiiruka"
-FMVERSION="" #redefined later
 FOLDERNAME="FasterMelee-$FMVERSION-$(date +%F)"
 LOG="$(PWD)/$FOLDERNAME/log.txt"
 
@@ -22,50 +21,11 @@ CPUS=$(getconf _NPROCESSORS_ONLN 2>/dev/null)
 # Give up...
 [ -z "$CPUS" ] && CPUS=1
 
-install() {
-	echo "Downloading required replacement files..."
-	wget $REPLACEFILELINK
-	echo "Extracting..."
-	tar -xzf $REPLACEFILENAME
-	rm $REPLACEFILENAME
-
-	echo "Adding adapter support (requires sudo permissions)..."
-	sudo rm /etc/udev/rules.d/51-gcadapter.rules 2> /dev/null # remove even if doesn't exist
-	# sudo touch /etc/udev/rules.d/51-gcadapter.rules
-	echo 'SUBSYSTEM=="usb", ENV{DEVTYPE}=="usb_device", ATTRS{idVendor}=="057e", ATTRS{idProduct}=="0337", MODE="0666"' | sudo tee /etc/udev/rules.d/51-gcadapter.rules > /dev/null # pipe to write-protected file, remove STDOUT
-	sudo udevadm control --reload-rules
-	echo "Rules added!" # set -e will take care of if/else
-
-	echo "Cloning repo (may take a while)..."
-	git clone $GITCLONELINK
-	cd Ishiiruka
-	echo "Switching to latest commit..."
-	git checkout $COMMITHASH >>"$LOG" 2>&1
-
-	echo "Adding portable files..."
-	mkdir build && cd build
-	mv ../../Binaries .
-
-	echo "cmaking..."
-	cmake .. -DLINUX_LOCAL_DEV=true >>"$LOG" 2>&1
-
-	echo "Compiling...(Verbose, will take a while)"
-	make -j $CPUS 2>>"$LOG" # gets rid of errors as to not cause confusion
-
-	echo "Cleaning up..."
-	rm $LOG
-	cd ../..
-	mv Ishiiruka/build/Binaries/ bin/
-	rm -rf Ishiiruka # -f required to remove git files
-	ln -s FasterMelee/bin/dolphin-emu ../launch-fm
-
-	echo 'Done! Run ./launch-fm to run!'
-	echo 'Make sure to unplug and replug your adapter before opening Dolphin for it to function!'
-}
-
 echo "tail -f $LOG to follow along with the log, or for troubleshooting!"
 
-echo "" # easiest way to preserve compatibility :P
+#all of the 2> /dev/nulls redirect useless errors (e.g. entering a newline) to devnull
+
+echo "" # easiest way to print newline while preserving compatibility :P
 echo "Would you like to overwrite all of your previous installations? (y/N)"
 read -r RESP
 
@@ -75,8 +35,6 @@ if [ "$RESP" = "y" ] 2> /dev/null || [ "$RESP" = "Y" ] 2> /dev/null; then
 	rm launch-fm 2> /dev/null
 	echo "Deleted all FM folders!"
 fi
-
-#all of the 2> /dev/nulls redirect useless errors (e.g. enter) to devnull
 
 echo ""
 echo "Which version of Faster Melee would you like to install? (default: 1)"
@@ -98,6 +56,20 @@ else
 fi
 
 echo "Installing version $FMVERSION!"
+REPLACEFILELINK="https://github.com/Ptomerty/FasterMelee-installer/raw/master/config/$FMVERSION-config.7z"
+echo "$REPLACEFILELINK"
+
+echo ""
+echo "Would you like to install rules for your Wii U adapter? (Y/n)"
+read -r RESP
+
+if [ ! "$RESP" = "n" ] && [ ! "$RESP" = "N" ]; then
+	sudo rm /etc/udev/rules.d/51-gcadapter.rules 2> /dev/null # remove even if doesn't exist
+	# sudo touch /etc/udev/rules.d/51-gcadapter.rules
+	echo 'SUBSYSTEM=="usb", ENV{DEVTYPE}=="usb_device", ATTRS{idVendor}=="057e", ATTRS{idProduct}=="0337", MODE="0666"' | sudo tee /etc/udev/rules.d/51-gcadapter.rules > /dev/null # pipe to write-protected file, remove STDOUT
+	sudo udevadm control --reload-rules
+	echo "Rules added!" # set -e will take care of if/else
+fi
 
 
 echo ""
@@ -115,5 +87,35 @@ echo "Using $CPUS thread(s)!"
 echo ""
 
 mkdir "$FOLDERNAME" && cd "$FOLDERNAME"
-install
+
+echo "Downloading required replacement files..."
+wget $REPLACEFILELINK
+echo "Extracting..."
+tar -xzf fmconfig.7z && rm fmconfig.7z	
+
+echo "Cloning repo (may take a while)..."
+git clone $GITCLONELINK
+cd Ishiiruka
+echo "Switching to latest commit..."
+git checkout $COMMITHASH >>"$LOG" 2>&1
+
+echo "Adding portable files..."
+mkdir build && cd build
+mv ../../Binaries .
+
+echo "cmaking..."
+cmake .. -DLINUX_LOCAL_DEV=true >>"$LOG" 2>&1
+
+echo "Compiling...(Verbose, will take a while)"
+make -j $CPUS 2>>"$LOG" # gets rid of errors as to not cause confusion
+
+echo "Cleaning up..."
+rm $LOG
+cd ../..
+mv Ishiiruka/build/Binaries/ bin/
+rm -rf Ishiiruka # -f required to remove git files
+ln -s $FOLDERNAME/bin/dolphin-emu ../launch-fm
+
+echo 'Done! Run ./launch-fm to run the latest installed version!'
+echo 'Make sure to unplug and replug your adapter before opening Dolphin for it to function!'
 
