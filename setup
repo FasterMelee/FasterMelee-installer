@@ -2,15 +2,13 @@
 
 set -e
 
-ORIGINALPATH="$PWD"
 COMMITHASH="dd88b80e231f79e2f257dfe793adfe5a4431ec8d"
 REPLACEFILENAME="FM_reqFiles.tar.gz"
 REPLACEFILELINK="https://github.com/Ptomerty/FasterMelee-installer/raw/master/$REPLACEFILENAME"
 GITCLONELINK="https://github.com/HannesMann/Ishiiruka"
-FMVERSION="5.5" #5.5 by default
-DAY=$(date +%D)
-FOLDERNAME="FasterMelee-$FMVERSION-$DAY"
-LOG="$ORIGINALPATH/$FOLDERNAME/log.txt"
+FMVERSION="" #redefined later
+FOLDERNAME="FasterMelee-$FMVERSION-$(date +%F)"
+LOG="$(PWD)/$FOLDERNAME/log.txt"
 
 # Source: https://gist.github.com/jj1bdx/5746298
 # `` kept in for legacy support, could replace with $(...)
@@ -52,10 +50,10 @@ install() {
 	cmake .. -DLINUX_LOCAL_DEV=true >>"$LOG" 2>&1
 
 	echo "Compiling...(Verbose, will take a while)"
-	make -j$CPUS 2>>"$LOG" # gets rid of errors as to not cause confusion
+	make -j $CPUS 2>>"$LOG" # gets rid of errors as to not cause confusion
 
 	echo "Cleaning up..."
-	rm "$ORIGINALPATH/FasterMelee/log.txt"
+	rm $LOG
 	cd ../..
 	mv Ishiiruka/build/Binaries/ bin/
 	rm -rf Ishiiruka # -f required to remove git files
@@ -67,24 +65,55 @@ install() {
 
 echo "tail -f $LOG to follow along with the log, or for troubleshooting!"
 
-echo "Would you like to overwrite your previous installations? (y/N)"
+echo "" # easiest way to preserve compatibility :P
+echo "Would you like to overwrite all of your previous installations? (y/N)"
 read -r RESP
 
-if [ ! "$RESP" = "y" ]; then
-	rm -r FasterMelee*/ launch-faster-melee launch-fm
+if [ "$RESP" = "y" ] 2> /dev/null || [ "$RESP" = "Y" ] 2> /dev/null; then
+	rm -r FasterMelee*/ launch-faster-melee launch-fm 2> /dev/null
+	rm launch-faster-melee 2> /dev/null
+	rm launch-fm 2> /dev/null
+	echo "Deleted all FM folders!"
 fi
 
+#all of the 2> /dev/nulls redirect useless errors (e.g. enter) to devnull
+
+echo ""
+echo "Which version of Faster Melee would you like to install? (default: 1)"
+echo "1.) 5.5 (Discord default)"
+echo "2.) 5.0.3 (SmashLadder default)"
+echo "3.) 4.4 (legacy)"
+read -r RESP
+
+if [ "$RESP" -ge 1 ] 2> /dev/null && [ "$RESP" -le 3 ] 2> /dev/null; then
+	 if [ "$RESP" -eq 1 ]; then
+	 	FMVERSION="5.5"
+	 elif [ "$RESP" -eq 2 ]; then
+	 	FMVERSION="5.0.3"
+	 elif [ "$RESP" -eq 3 ]; then
+	 	FMVERSION="4.4"
+	 fi
+else
+	FMVERSION="5.5"
+fi
+
+echo "Installing version $FMVERSION!"
+
+
+echo ""
 echo "CPU Threads detected: $CPUS"
 echo "How many threads would you like to use to compile? (passed to make as -j flag, default: 1, max: $((CPUS + 1)))"
 read -r RESP
 
-if [ "$RESP" -ge 1 ] && [ "$RESP" -le $((CPUS + 1)) ] 2> /dev/null; then
-	CPUS=$RESP #checks 
+if [ "$RESP" -ge 1 ] 2> /dev/null && [ "$RESP" -le $((CPUS + 1)) ] 2> /dev/null; then
+	CPUS=$RESP 
 else
-	CPUS=1
+	CPUS=1 #bad input?
 fi
 
-mkdir "$FOLDERNAME" && cd "$FOLDERNAME"
+echo "Using $CPUS thread(s)!"
+echo ""
 
+mkdir "$FOLDERNAME" && cd "$FOLDERNAME"
 install
 
