@@ -9,41 +9,57 @@ REPLACEFILENAME="FM_reqFiles.tar.gz"
 REPLACEFILELINK="https://github.com/Ptomerty/FasterMelee-installer/raw/master/$REPLACEFILENAME"
 GITCLONELINK="https://github.com/HannesMann/Ishiiruka"
 
+install() {
+	echo "Downloading required replacement files..."
+	wget $REPLACEFILELINK
+	echo "Extracting..."
+	tar -xzf $REPLACEFILENAME
+	rm $REPLACEFILENAME
+
+	echo "Adding adapter support (requires sudo permissions)..."
+	sh adaptersetup
+
+	echo "Cloning repo (may take a while)..."
+	git clone $GITCLONELINK
+	cd Ishiiruka
+	echo "Switching to latest commit..."
+	git checkout $COMMITHASH >>"$LOG" 2>&1
+
+	echo "Adding portable files..."
+	mkdir build && cd build
+	mv ../../Binaries .
+
+	echo "cmaking..."
+	cmake .. -DLINUX_LOCAL_DEV=true >>"$LOG" 2>&1
+
+	echo "Compiling...(Verbose, will take a while)"
+	make 2>>"$LOG" #gets rid of errors as to not cause confusion
+
+	echo "Cleaning up..."
+	rm "$ORIGINALPATH/FasterMelee/log.txt"
+	cd ../..
+	mv Ishiiruka/build/Binaries/ bin/
+	rm -rf Ishiiruka # -f required to remove git files
+	ln -s FasterMelee/bin/dolphin-emu ../launch-faster-melee
+
+	echo 'Done! Run ./launch-faster-melee to run!'
+	echo 'Make sure to unplug and replug your adapter before opening Dolphin!'
+}
+
+
 echo "tail -f $LOG for more info!"
 
 mkdir -p FasterMelee && cd FasterMelee
-echo "Downloading required replacement files..."
-wget $REPLACEFILELINK
-echo "Extracting..."
-tar -xzf $REPLACEFILENAME
-rm $REPLACEFILENAME
 
-echo "Adding adapter support (requires sudo permissions)..."
-sh adaptersetup
+echo "Warning! This script will erase all previous Faster Melee files in the current directory! Are you sure you want to continue? (y/n) "
+read -r RESP
 
-echo "Cloning repo (may take a while)..."
-git clone $GITCLONELINK
-cd Ishiiruka
-echo "Switching to latest commit..."
-git checkout $COMMITHASH >>"$LOG" 2>&1
+if [ ! "$RESP" = "y" ]; then
+	echo "Exiting..."
+	exit
+else
+	rm -r FasterMelee/ launch-faster-melee
+fi
 
-echo "Adding portable files..."
-mkdir build && cd build
-mv ../../Binaries .
-
-echo "cmaking..."
-cmake .. -DLINUX_LOCAL_DEV=true >>"$LOG" 2>&1
-
-echo "Compiling...(Verbose, will take a while)"
-make 2>>"$LOG" #gets rid of errors as to not cause confusion
-
-echo "Cleaning up..."
-rm "$ORIGINALPATH/FasterMelee/log.txt"
-cd ../..
-mv Ishiiruka/build/Binaries/ bin/
-rm -rf Ishiiruka # -f required to remove git files
-ln -s FasterMelee/bin/dolphin-emu ../launch-faster-melee
-
-echo 'Done! Run ./launch-faster-melee to run!'
-echo 'Make sure to unplug and replug your adapter before opening Dolphin!'
+install
 
