@@ -56,8 +56,7 @@ else
 fi
 
 echo "Installing version $FMVERSION!"
-REPLACEFILELINK="https://github.com/Ptomerty/FasterMelee-installer/raw/master/config/$FMVERSION-config.7z"
-echo "$REPLACEFILELINK"
+REPLACEFILELINK="https://github.com/Ptomerty/FasterMelee-installer/raw/master/config/$FMVERSION-config.tar.gz"
 
 echo ""
 echo "Would you like to install rules for your Wii U adapter? (Y/n)"
@@ -91,7 +90,7 @@ mkdir "$FOLDERNAME" && cd "$FOLDERNAME"
 echo "Downloading required replacement files..."
 wget $REPLACEFILELINK
 echo "Extracting..."
-tar -xzf fmconfig.7z && rm fmconfig.7z	
+tar -xzf "$FMVERSION-config.tar.gz" && rm "$FMVERSION-config.tar.gz"	
 
 echo "Cloning repo (may take a while)..."
 git clone $GITCLONELINK
