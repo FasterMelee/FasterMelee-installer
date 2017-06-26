@@ -7,7 +7,7 @@ COMMITHASH="dd88b80e231f79e2f257dfe793adfe5a4431ec8d"
 REPLACEFILENAME="FM_reqFiles.tar.gz"
 REPLACEFILELINK="https://github.com/Ptomerty/FasterMelee-installer/raw/master/$REPLACEFILENAME"
 GITCLONELINK="https://github.com/HannesMann/Ishiiruka"
-FMVERSION="5.5"
+FMVERSION="5.5" #5.5 by default
 DAY=$(date +%D)
 FOLDERNAME="FasterMelee-$FMVERSION-$DAY"
 LOG="$ORIGINALPATH/$FOLDERNAME/log.txt"
@@ -32,7 +32,11 @@ install() {
 	rm $REPLACEFILENAME
 
 	echo "Adding adapter support (requires sudo permissions)..."
-	adapter
+	sudo rm /etc/udev/rules.d/51-gcadapter.rules 2> /dev/null # remove even if doesn't exist
+	# sudo touch /etc/udev/rules.d/51-gcadapter.rules
+	echo 'SUBSYSTEM=="usb", ENV{DEVTYPE}=="usb_device", ATTRS{idVendor}=="057e", ATTRS{idProduct}=="0337", MODE="0666"' | sudo tee /etc/udev/rules.d/51-gcadapter.rules > /dev/null # pipe to write-protected file, remove STDOUT
+	sudo udevadm control --reload-rules
+	echo "Rules added!" # set -e will take care of if/else
 
 	echo "Cloning repo (may take a while)..."
 	git clone $GITCLONELINK
@@ -61,14 +65,6 @@ install() {
 	echo 'Make sure to unplug and replug your adapter before opening Dolphin for it to function!'
 }
 
-adapter() {
-	sudo rm /etc/udev/rules.d/51-gcadapter.rules 2> /dev/null # remove even if doesn't exist
-	# sudo touch /etc/udev/rules.d/51-gcadapter.rules
-	echo 'SUBSYSTEM=="usb", ENV{DEVTYPE}=="usb_device", ATTRS{idVendor}=="057e", ATTRS{idProduct}=="0337", MODE="0666"' | sudo tee /etc/udev/rules.d/51-gcadapter.rules > /dev/null # pipe to write-protected file, remove STDOUT
-	sudo udevadm control --reload-rules
-	echo "Rules added!" # set -e will take care of if/else
-}
-
 echo "tail -f $LOG to follow along with the log, or for troubleshooting!"
 
 echo "Would you like to overwrite your previous installations? (y/N)"
@@ -78,7 +74,17 @@ if [ ! "$RESP" = "y" ]; then
 	rm -r FasterMelee*/ launch-faster-melee launch-fm
 fi
 
-mkdir $FOLDERNAME && cd $FOLDERNAME
+echo "CPU Threads detected: $CPUS"
+echo "How many threads would you like to use to compile? (passed to make as -j flag, default: 1, max: $((CPUS + 1)))"
+read -r RESP
+
+if [ "$RESP" -ge 1 ] && [ "$RESP" -le $((CPUS + 1)) ] 2> /dev/null; then
+	CPUS=$RESP #checks 
+else
+	CPUS=1
+fi
+
+mkdir "$FOLDERNAME" && cd "$FOLDERNAME"
 
 install
 
