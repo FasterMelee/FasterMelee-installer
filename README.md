@@ -1,8 +1,6 @@
 # Faster Melee Installer for Linux
 
-A script for compiling the latest version of Faster Melee (currently **5.5** with netplay support) on various Linux distributions.
-
-### **SmashLadder users on 5.0.3: Please see your instructions below!**
+A script for compiling Faster Melee (currently supported: **5.5** and **5.0.3**) on Linux.
 
 Currently tested on Arch and Ubuntu 17.04. Older versions can be found under the "legacy" branch.
 
@@ -15,30 +13,16 @@ In general, you need g++ (version >= 4.9), git, build-essential, cmake, make, li
 
 DEBIAN JESSIE users note: `libavformat-dev` must be installed from jessie-backports to avoid errors.
 
-## SmashLadder users on 5.0.3: 
-
-```sh
-wget "https://github.com/Ptomerty/FasterMelee-installer/raw/legacy/5.0.3/setup"
-sh setup
-```
-
-## To use (fresh install into FasterMelee/):
+## To use:
 
 ```sh
 wget "https://github.com/Ptomerty/FasterMelee-installer/raw/master/setup"
 sh setup
 ```
 
-## To upgrade:
-
-Note that this does not reinstall adapter rules and will delete your old FasterMelee folder!
-
-```sh
-wget "https://github.com/Ptomerty/FasterMelee-installer/raw/master/setup_upgrade"
-sh setup
-```
-
 ## Changelog
+
+v1.8: Rewrote installer, now includes dual support for 5.0.3 and 5.5, with prompts for everything else.
 
 v1.7: 5.5 support, added adapter setup support, later improved by /u/folfess.
 
@@ -52,9 +36,11 @@ v1.3~reg1: Final version, attempting to avoid cloning Ishiiruka causes unfixable
 
 
 ### Thanks to:
-/u/ParadigmComplex. Seriously could not have done it without this guy.
+/u/ParadigmComplex. Seriously, I could not have finished the basic script without this guy.
 
-Also thanks to xanax, CilanMan, /u/algebra123230, /u/folfess, and /u/jojorino!
+/u/jojorino and Hannesmann, always testing and helping, as well as the rest of the FM discord!
+
+Also thanks to xanax, CilanMan, /u/algebra123230, /u/folfess for incremental improvements!
 
 ### Other resources:
 

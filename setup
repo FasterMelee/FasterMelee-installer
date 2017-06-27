@@ -2,13 +2,6 @@
 
 set -e
 
-REPLACEFILELINK=""
-FMVERSION="" #just defining
-COMMITHASH="dd88b80e231f79e2f257dfe793adfe5a4431ec8d"
-GITCLONELINK="https://github.com/HannesMann/Ishiiruka"
-FOLDERNAME="FasterMelee-$FMVERSION-$(date +%F)"
-LOG="$(PWD)/$FOLDERNAME/log.txt"
-
 # Source: https://gist.github.com/jj1bdx/5746298
 
 # Linux and similar...
@@ -29,10 +22,12 @@ echo "Would you like to overwrite all of your previous installations? (y/N)"
 read -r RESP
 
 if [ "$RESP" = "y" ] 2> /dev/null || [ "$RESP" = "Y" ] 2> /dev/null; then
-	rm -r FasterMelee*/ 2> /dev/null
-	rm launch-faster-melee 2> /dev/null
-	rm launch-fm 2> /dev/null
-	echo "Deleted all FM folders!"
+	echo "Are you sure? This action is not reversible! (y/N)"
+	read -r RESP
+	if [ "$RESP" = "y" ] 2> /dev/null || [ "$RESP" = "Y" ] 2> /dev/null; then
+		rm -rf FasterMelee*/ 2> /dev/null
+		echo "Deleted all FM folders!"
+	fi
 fi
 
 echo ""
@@ -44,22 +39,31 @@ read -r RESP
 if [ "$RESP" -ge 1 ] 2> /dev/null && [ "$RESP" -le 2 ] 2> /dev/null; then
 	 if [ "$RESP" -eq 1 ]; then
 	 	FMVERSION="5.5"
+		COMMITHASH="dd88b80e231f79e2f257dfe793adfe5a4431ec8d"
+		GITCLONELINK="https://github.com/HannesMann/Ishiiruka"
 	 elif [ "$RESP" -eq 2 ]; then
 	 	FMVERSION="5.0.3"
+		COMMITHASH="d462ca38724db65d7f92f3edbd16b6657291e420"
+		GITCLONELINK="https://github.com/Tinob/Ishiiruka"
 	 fi
 else
 	FMVERSION="5.5"
+	COMMITHASH="dd88b80e231f79e2f257dfe793adfe5a4431ec8d"
+	GITCLONELINK="https://github.com/HannesMann/Ishiiruka"
 fi
 
 echo "Installing version $FMVERSION!"
-REPLACEFILELINK="https://github.com/Ptomerty/FasterMelee-installer/raw/master/config/$FMVERSION-config.tar.gz"
+
+REPLACEFILELINK="https://github.com/Ptomerty/FasterMelee-installer/raw/master/config/$FMVERSION-fmconfig.tar.gz"
+FOLDERNAME="FasterMelee-$FMVERSION-$(date +%F)"
+LOG="$(pwd)/$FOLDERNAME/log.txt"
 
 echo ""
 echo "Would you like to install rules for your Wii U adapter? (Y/n)"
 read -r RESP
 
 if [ ! "$RESP" = "n" ] && [ ! "$RESP" = "N" ]; then
-	sudo rm /etc/udev/rules.d/51-gcadapter.rules 2> /dev/null # remove even if doesn't exist
+	sudo rm -f /etc/udev/rules.d/51-gcadapter.rules 2> /dev/null # remove even if doesn't exist
 	# sudo touch /etc/udev/rules.d/51-gcadapter.rules
 	echo 'SUBSYSTEM=="usb", ENV{DEVTYPE}=="usb_device", ATTRS{idVendor}=="057e", ATTRS{idProduct}=="0337", MODE="0666"' | sudo tee /etc/udev/rules.d/51-gcadapter.rules > /dev/null # pipe to write-protected file, remove STDOUT
 	sudo udevadm control --reload-rules
@@ -75,7 +79,7 @@ read -r RESP
 if [ "$RESP" -ge 1 ] 2> /dev/null && [ "$RESP" -le $((CPUS + 1)) ] 2> /dev/null; then
 	CPUS=$RESP 
 else
-	CPUS=1 #bad input?
+	CPUS=1
 fi
 
 echo "Using $CPUS thread(s)!"
@@ -86,13 +90,13 @@ mkdir "$FOLDERNAME" && cd "$FOLDERNAME"
 echo "Downloading required replacement files..."
 wget $REPLACEFILELINK
 echo "Extracting..."
-tar -xzf "$FMVERSION-config.tar.gz" && rm "$FMVERSION-config.tar.gz"	
+tar -xzf "$FMVERSION-fmconfig.tar.gz" && rm "$FMVERSION-fmconfig.tar.gz"	
 
 echo "Cloning repo (may take a while)..."
 git clone $GITCLONELINK
 cd Ishiiruka
 echo "Switching to latest commit..."
-git checkout $COMMITHASH >>"$LOG" 2>&1
+git checkout $COMMITHASH >> "$LOG" 2>&1
 
 echo "Adding portable files..."
 mkdir build && cd build
@@ -105,11 +109,13 @@ echo "Compiling...(Verbose, will take a while)"
 make -j $CPUS 2>>"$LOG" # gets rid of errors as to not cause confusion
 
 echo "Cleaning up..."
-rm $LOG
+rm "$LOG"
 cd ../..
 mv Ishiiruka/build/Binaries/ bin/
 rm -rf Ishiiruka # -f required to remove git files
-ln -s $FOLDERNAME/bin/dolphin-emu ../launch-fm
+rm ../launch-faster-melee 2> /dev/null
+rm ../launch-fm 2> /dev/null
+ln -s "$FOLDERNAME/bin/dolphin-emu" ../launch-fm
 
 echo 'Done! Run ./launch-fm to run the latest installed version!'
 echo 'Make sure to unplug and replug your adapter before opening Dolphin for it to function!'
