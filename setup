@@ -10,7 +10,6 @@ FOLDERNAME="FasterMelee-$FMVERSION-$(date +%F)"
 LOG="$(PWD)/$FOLDERNAME/log.txt"
 
 # Source: https://gist.github.com/jj1bdx/5746298
-# `` kept in for legacy support, could replace with $(...)
 
 # Linux and similar...
 CPUS=$(getconf _NPROCESSORS_ONLN 2>/dev/null)
@@ -30,7 +29,7 @@ echo "Would you like to overwrite all of your previous installations? (y/N)"
 read -r RESP
 
 if [ "$RESP" = "y" ] 2> /dev/null || [ "$RESP" = "Y" ] 2> /dev/null; then
-	rm -r FasterMelee*/ launch-faster-melee launch-fm 2> /dev/null
+	rm -r FasterMelee*/ 2> /dev/null
 	rm launch-faster-melee 2> /dev/null
 	rm launch-fm 2> /dev/null
 	echo "Deleted all FM folders!"
@@ -40,16 +39,13 @@ echo ""
 echo "Which version of Faster Melee would you like to install? (default: 1)"
 echo "1.) 5.5 (Discord default)"
 echo "2.) 5.0.3 (SmashLadder default)"
-echo "3.) 4.4 (legacy)"
 read -r RESP
 
-if [ "$RESP" -ge 1 ] 2> /dev/null && [ "$RESP" -le 3 ] 2> /dev/null; then
+if [ "$RESP" -ge 1 ] 2> /dev/null && [ "$RESP" -le 2 ] 2> /dev/null; then
 	 if [ "$RESP" -eq 1 ]; then
 	 	FMVERSION="5.5"
 	 elif [ "$RESP" -eq 2 ]; then
 	 	FMVERSION="5.0.3"
-	 elif [ "$RESP" -eq 3 ]; then
-	 	FMVERSION="4.4"
 	 fi
 else
 	FMVERSION="5.5"
