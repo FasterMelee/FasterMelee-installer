@@ -13,9 +13,18 @@ CPUS=$(getconf _NPROCESSORS_ONLN 2>/dev/null)
 # Give up...
 [ -z "$CPUS" ] && CPUS=1
 
-echo "tail -f $LOG to follow along with the log, or for troubleshooting!"
+echo "tail -f $LOG to follow along with the log for troubleshooting!"
 
 #all of the 2> /dev/nulls redirect useless errors (e.g. entering a newline) to devnull
+
+echo ""
+echo "Attempting to delete incomplete installations of FM..."
+for f in FasterMelee*; do
+	if [ -d ${f} ] && [ -f "$f/log.txt" ]; then
+		rm -rf "$f"
+	fi
+done
+
 
 echo "" # easiest way to print newline while preserving compatibility :P
 echo "Would you like to overwrite all of your previous installations? (y/N)"
