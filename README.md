@@ -22,6 +22,8 @@ sh setup
 
 ## Changelog
 
+v1.8.1: Cleans out incomplete installations, and offers multiple same-version-same-day support.
+
 v1.8: Rewrote installer, now includes dual support for 5.0.3 and 5.5, with prompts for everything else.
 
 v1.7: 5.5 support, added adapter setup support, later improved by /u/folfess.
