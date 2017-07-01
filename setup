@@ -131,7 +131,7 @@ mv ../../Binaries .
 echo "cmaking..."
 cmake .. -DLINUX_LOCAL_DEV=true >>"$LOG" 2>&1
 
-echo "Compiling...(Verbose, will take a while)"
+echo 'Compiling...(Verbose, will take a while)'
 make -j $CPUS 2>>"$LOG" # gets rid of errors as to not cause confusion
 
 echo "Cleaning up..."
