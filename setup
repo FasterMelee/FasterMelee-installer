@@ -13,9 +13,18 @@ CPUS=$(getconf _NPROCESSORS_ONLN 2>/dev/null)
 # Give up...
 [ -z "$CPUS" ] && CPUS=1
 
-echo "tail -f $LOG to follow along with the log, or for troubleshooting!"
+echo "tail -f $LOG to follow along with the log for troubleshooting!"
 
-#all of the 2> /dev/nulls redirect useless errors (e.g. entering a newline) to devnull
+# all of the 2> /dev/nulls redirect useless errors (e.g. entering a newline) to devnull
+
+echo ""
+echo "Attempting to delete incomplete installations of FM..."
+for f in FasterMelee*; do
+	if [ -d ${f} ] && [ -d "$f/Binaries" ]; then
+		echo "Found incomplete installation at $f/, deleting."
+		rm -rf "$f" # is incomplete if Binaries/ exists, contains config
+	fi
+done
 
 echo "" # easiest way to print newline while preserving compatibility :P
 echo "Would you like to overwrite all of your previous installations? (y/N)"
@@ -55,7 +64,23 @@ fi
 echo "Installing version $FMVERSION!"
 
 REPLACEFILELINK="https://github.com/Ptomerty/FasterMelee-installer/raw/master/config/$FMVERSION-fmconfig.tar.gz"
-FOLDERNAME="FasterMelee-$FMVERSION-$(date +%F)"
+FOLDERNAME="FasterMelee-${FMVERSION}_$(date +%F)"
+if [ -d "$FOLDERNAME" ]; then
+	I=1
+	MAX=10
+	while [ $I -lt $MAX ]; do
+		if [ ! -d "${FOLDERNAME}_${I}" ]; then
+			FOLDERNAME="${FOLDERNAME}_${I}"
+			break
+		fi
+		I=$((I+1))
+	done
+	if [ $I -eq 10 ]; then
+		echo "Why do you have 10 FM installations? ._."
+		echo "Unable to continue, script exiting!"
+		exit
+	fi
+fi
 LOG="$(pwd)/$FOLDERNAME/log.txt"
 
 echo ""
@@ -67,7 +92,7 @@ if [ ! "$RESP" = "n" ] && [ ! "$RESP" = "N" ]; then
 	# sudo touch /etc/udev/rules.d/51-gcadapter.rules
 	echo 'SUBSYSTEM=="usb", ENV{DEVTYPE}=="usb_device", ATTRS{idVendor}=="057e", ATTRS{idProduct}=="0337", MODE="0666"' | sudo tee /etc/udev/rules.d/51-gcadapter.rules > /dev/null # pipe to write-protected file, remove STDOUT
 	sudo udevadm control --reload-rules
-	echo "Rules added!" # set -e will take care of if/else
+	echo "Rules added!"
 fi
 
 
@@ -112,7 +137,7 @@ echo "Cleaning up..."
 rm "$LOG"
 cd ../..
 mv Ishiiruka/build/Binaries/ bin/
-rm -rf Ishiiruka # -f required to remove git files
+rm -rf Ishiiruka # -f required to remove git history
 rm ../launch-faster-melee 2> /dev/null
 rm ../launch-fm 2> /dev/null
 ln -s "$FOLDERNAME/bin/dolphin-emu" ../launch-fm
