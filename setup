@@ -27,11 +27,11 @@ for f in FasterMelee*; do
 done
 
 echo "" # easiest way to print newline while preserving compatibility :P
-echo "Would you like to overwrite all of your previous installations? (y/N)"
+echo 'Would you like to overwrite all of your previous installations? (y/N)'
 read -r RESP
 
 if [ "$RESP" = "y" ] 2> /dev/null || [ "$RESP" = "Y" ] 2> /dev/null; then
-	echo "Are you sure? This action is not reversible! (y/N)"
+	echo 'Are you sure? This action is not reversible! (y/N)'
 	read -r RESP
 	if [ "$RESP" = "y" ] 2> /dev/null || [ "$RESP" = "Y" ] 2> /dev/null; then
 		rm -rf FasterMelee*/ 2> /dev/null
@@ -40,9 +40,9 @@ if [ "$RESP" = "y" ] 2> /dev/null || [ "$RESP" = "Y" ] 2> /dev/null; then
 fi
 
 echo ""
-echo "Which version of Faster Melee would you like to install? (default: 1)"
-echo "1.) 5.5 (Discord default)"
-echo "2.) 5.0.3 (SmashLadder default)"
+echo 'Which version of Faster Melee would you like to install? (default: 1)'
+echo '1.) 5.5 (Discord default)'
+echo '2.) 5.0.3 (SmashLadder default)'
 read -r RESP
 
 if [ "$RESP" -ge 1 ] 2> /dev/null && [ "$RESP" -le 2 ] 2> /dev/null; then
@@ -76,15 +76,16 @@ if [ -d "$FOLDERNAME" ]; then
 		I=$((I+1))
 	done
 	if [ $I -eq 10 ]; then
-		echo "Why do you have 10 FM installations? ._."
+		echo 'Why do you have 10 FM installations? ._.'
 		echo "Unable to continue, script exiting!"
+		echo "Message Ptomerty on Discord for help, or to rant at him."
 		exit
 	fi
 fi
 LOG="$(pwd)/$FOLDERNAME/log.txt"
 
 echo ""
-echo "Would you like to install rules for your Wii U adapter? (Y/n)"
+echo 'Would you like to install rules for your Wii U adapter? (Y/n)'
 read -r RESP
 
 if [ ! "$RESP" = "n" ] && [ ! "$RESP" = "N" ]; then
@@ -98,7 +99,7 @@ fi
 
 echo ""
 echo "CPU Threads detected: $CPUS"
-echo "How many threads would you like to use to compile? (passed to make as -j flag, default: 1, max: $((CPUS + 1)))"
+echo 'How many threads would you like to use to compile? (passed to make as -j flag, default: 1, max: $((CPUS + 1)))'
 read -r RESP
 
 if [ "$RESP" -ge 1 ] 2> /dev/null && [ "$RESP" -le $((CPUS + 1)) ] 2> /dev/null; then
@@ -107,7 +108,7 @@ else
 	CPUS=1
 fi
 
-echo "Using $CPUS thread(s)!"
+echo 'Using $CPUS thread(s)!'
 echo ""
 
 mkdir "$FOLDERNAME" && cd "$FOLDERNAME"
@@ -117,7 +118,7 @@ wget $REPLACEFILELINK
 echo "Extracting..."
 tar -xzf "$FMVERSION-fmconfig.tar.gz" && rm "$FMVERSION-fmconfig.tar.gz"	
 
-echo "Cloning repo (may take a while)..."
+echo 'Cloning repo (may take a while)...'
 git clone $GITCLONELINK
 cd Ishiiruka
 echo "Switching to latest commit..."
