@@ -20,11 +20,12 @@ echo "tail -f $LOG to follow along with the log for troubleshooting!"
 echo ""
 echo "Attempting to delete incomplete installations of FM..."
 for f in FasterMelee*; do
-	if [ -d ${f} ] && [ -d "$f/Binaries" ] || [ -f "$f/log.txt" ]; then
+	if [ -d "${f}" ] && [ -d "$f/Binaries" ] || [ -f "$f/log.txt" ]; then
 		echo "Found incomplete installation at $f/, deleting."
 		rm -rf "$f" # is incomplete if Binaries/ exists, contains config
 	fi
 done
+
 echo "" # easiest way to print newline while preserving compatibility :P
 echo "Would you like to overwrite all of your previous installations? (y/N)"
 read -r RESP
@@ -36,21 +37,16 @@ if [ "$RESP" = "y" ] 2> /dev/null || [ "$RESP" = "Y" ] 2> /dev/null; then
 		echo "Deleted all FM folders!"
 	fi
 fi
+
 echo ""
 echo "Which version of Faster Melee would you like to install? (default: 1)"
 echo "1.) 5.6 (Discord default)"
 echo "2.) 5.0.3 (SmashLadder default)"
 read -r RESP
-if [ "$RESP" -ge 1 ] 2> /dev/null && [ "$RESP" -le 2 ] 2> /dev/null; then
-	 if [ "$RESP" -eq 1 ]; then
-	 	FMVERSION="5.6"
-		COMMITHASH="cdc00a320232a3a5f023c1aa53d7f4619f322757"
-		GITCLONELINK="https://github.com/HannesMann/Ishiiruka"
-	 elif [ "$RESP" -eq 2 ]; then
-	 	FMVERSION="5.0.3"
-		COMMITHASH="d462ca38724db65d7f92f3edbd16b6657291e420"
-		GITCLONELINK="https://github.com/Tinob/Ishiiruka"
-	 fi
+if [ "$RESP" -eq 2 ] 2> /dev/null; then
+ 	FMVERSION="5.0.3"
+	COMMITHASH="d462ca38724db65d7f92f3edbd16b6657291e420"
+	GITCLONELINK="https://github.com/Tinob/Ishiiruka"
 else
 	FMVERSION="5.6"
 	COMMITHASH="cdc00a320232a3a5f023c1aa53d7f4619f322757"
@@ -71,6 +67,7 @@ if [ -d "$FOLDERNAME" ]; then
 	done
 fi
 LOG="$(pwd)/$FOLDERNAME/log.txt"
+
 echo ""
 echo "Would you like to install rules for your Wii U adapter? (Y/n)"
 read -r RESP
@@ -81,6 +78,7 @@ if [ ! "$RESP" = "n" ] && [ ! "$RESP" = "N" ]; then
 	sudo udevadm control --reload-rules
 	echo "Rules added!"
 fi
+
 echo ""
 echo "CPU Threads detected: $CPUS"
 echo "How many threads would you like to use to compile? (passed to make as -j flag, default: 1, max: $((CPUS + 1)))"
@@ -91,6 +89,7 @@ else
 	CPUS=1
 fi
 echo "Using $CPUS thread(s)!"
+
 echo ""
 mkdir "$FOLDERNAME" && cd "$FOLDERNAME"
 echo "Downloading required replacement files..."
