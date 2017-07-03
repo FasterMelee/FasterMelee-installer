@@ -38,13 +38,13 @@ if [ "$RESP" = "y" ] 2> /dev/null || [ "$RESP" = "Y" ] 2> /dev/null; then
 fi
 echo ""
 echo "Which version of Faster Melee would you like to install? (default: 1)"
-echo "1.) 5.5 (Discord default)"
+echo "1.) 5.6 (Discord default)"
 echo "2.) 5.0.3 (SmashLadder default)"
 read -r RESP
 if [ "$RESP" -ge 1 ] 2> /dev/null && [ "$RESP" -le 2 ] 2> /dev/null; then
 	 if [ "$RESP" -eq 1 ]; then
-	 	FMVERSION="5.5"
-		COMMITHASH="dd88b80e231f79e2f257dfe793adfe5a4431ec8d"
+	 	FMVERSION="5.6"
+		COMMITHASH="cdc00a320232a3a5f023c1aa53d7f4619f322757"
 		GITCLONELINK="https://github.com/HannesMann/Ishiiruka"
 	 elif [ "$RESP" -eq 2 ]; then
 	 	FMVERSION="5.0.3"
@@ -52,8 +52,8 @@ if [ "$RESP" -ge 1 ] 2> /dev/null && [ "$RESP" -le 2 ] 2> /dev/null; then
 		GITCLONELINK="https://github.com/Tinob/Ishiiruka"
 	 fi
 else
-	FMVERSION="5.5"
-	COMMITHASH="dd88b80e231f79e2f257dfe793adfe5a4431ec8d"
+	FMVERSION="5.6"
+	COMMITHASH="cdc00a320232a3a5f023c1aa53d7f4619f322757"
 	GITCLONELINK="https://github.com/HannesMann/Ishiiruka"
 fi
 echo "Installing version $FMVERSION!"
@@ -61,19 +61,14 @@ REPLACEFILELINK="https://github.com/Ptomerty/FasterMelee-installer/raw/master/co
 FOLDERNAME="FasterMelee-${FMVERSION}_$(date +%F)"
 if [ -d "$FOLDERNAME" ]; then
 	I=1
-	MAX=10
-	while [ $I -lt $MAX ]; do
+	while :
+	do
 		if [ ! -d "${FOLDERNAME}_${I}" ]; then
 			FOLDERNAME="${FOLDERNAME}_${I}"
 			break
 		fi
 		I=$((I+1))
 	done
-	if [ $I -eq 10 ]; then
-		echo "Why do you have 10 FM installations? ._."
-		echo "Unable to continue, script exiting!"
-		exit
-	fi
 fi
 LOG="$(pwd)/$FOLDERNAME/log.txt"
 echo ""
