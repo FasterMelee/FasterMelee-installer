@@ -20,7 +20,7 @@ echo "tail -f $LOG to follow along with the log for troubleshooting!"
 echo ""
 echo "Attempting to delete incomplete installations of FM..."
 for f in FasterMelee*; do
-	if [ -d "${f}" ] && [ -d "$f/Binaries" ] || [ -f "$f/log.txt" ]; then
+	if [ -d "${f}" ] && [ ! -d "$f/bin" ]; then
 		echo "Found incomplete installation at $f/, deleting."
 		rm -rf "$f" # is incomplete if Binaries/ exists, contains config
 	fi
