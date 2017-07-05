@@ -113,8 +113,9 @@ rm "$LOG"
 cd ../..
 mv Ishiiruka/build/Binaries/ bin/
 rm -rf Ishiiruka # -f required to remove git history
-rm ../launch-faster-melee 2> /dev/null
-rm ../launch-fm 2> /dev/null
+rm -f ../launch-faster-melee # -f required if shortcuts do not exist
+rm -f ../launch-fm
+echo "${pwd}"
 ln -s "$FOLDERNAME/bin/dolphin-emu" ../launch-fm
 echo 'Done! Run ./launch-fm to run the latest installed version!'
 echo 'Make sure to unplug and replug your adapter before opening Dolphin for it to function!'
