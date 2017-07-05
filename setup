@@ -40,7 +40,7 @@ fi
 
 echo ""
 echo "Which version of Faster Melee would you like to install? (default: 1)"
-echo "1.) 5.6 (Discord default)"
+echo "1.) 5.65 (Discord default)"
 echo "2.) 5.0.3 (SmashLadder default)"
 read -r RESP
 if [ "$RESP" -eq 2 ] 2> /dev/null; then
@@ -48,7 +48,7 @@ if [ "$RESP" -eq 2 ] 2> /dev/null; then
 	COMMITHASH="d462ca38724db65d7f92f3edbd16b6657291e420"
 	GITCLONELINK="https://github.com/Tinob/Ishiiruka"
 else
-	FMVERSION="5.6"
+	FMVERSION="5.65"
 	COMMITHASH="cdc00a320232a3a5f023c1aa53d7f4619f322757"
 	GITCLONELINK="https://github.com/HannesMann/Ishiiruka"
 fi
