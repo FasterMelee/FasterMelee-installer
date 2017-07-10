@@ -20,7 +20,7 @@ wget "https://github.com/Ptomerty/FasterMelee-installer/raw/master/setup"
 sh setup
 ```
 
-If a not-up-to-date version is needed (e.g. not Discord/SL default), open the script and replace the desired variables.
+If a not-up-to-date version is needed (e.g. not Discord/SL default), edit the script and replace the desired variables.
 
 ## Changelog
 
