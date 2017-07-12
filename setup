@@ -3,7 +3,6 @@
 set -e
 
 # Source: https://gist.github.com/jj1bdx/5746298
-
 # Linux and similar...
 CPUS=$(getconf _NPROCESSORS_ONLN 2>/dev/null)
 # FreeBSD and similar...
@@ -14,8 +13,14 @@ CPUS=$(getconf _NPROCESSORS_ONLN 2>/dev/null)
 [ -z "$CPUS" ] && CPUS=1
 
 echo "tail -f $LOG to follow along with the log for troubleshooting!"
-
 # all of the 2> /dev/nulls redirect useless errors (e.g. entering a newline) to devnull
+
+# define custom config links here!
+FMVERSION="" # name of FM version, used in folder name
+COMMITHASH="" # full commit hash 
+GITCLONELINK="" # Version of Ishiiruka
+CONFIGLINK="" # Packed configs, can be found under config/ or config/legacy/
+
 
 echo ""
 echo "Attempting to delete incomplete installations of FM..."
@@ -38,22 +43,28 @@ if [ "$RESP" = "y" ] 2> /dev/null || [ "$RESP" = "Y" ] 2> /dev/null; then
 	fi
 fi
 
-echo ""
-echo "Which version of Faster Melee would you like to install? (default: 1)"
-echo "1.) 5.66 (Discord default)"
-echo "2.) 5.0.3 (SmashLadder default)"
-read -r RESP
-if [ "$RESP" -eq 2 ] 2> /dev/null; then
- 	FMVERSION="5.0.3"
-	COMMITHASH="d462ca38724db65d7f92f3edbd16b6657291e420"
-	GITCLONELINK="https://github.com/Tinob/Ishiiruka"
+if [ -z "$FMVERSION" ] || [ -z "$COMMITHASH" ] || [ -z "$GITCLONELINK" ] || [ -z "$CONFIGLINK" ]; then #ORs used to ensure no mistakeseverything filled out
+	echo ""
+	echo "Which version of Faster Melee would you like to install? (default: 1)"
+	echo "1.) 5.66 (Discord default)"
+	echo "2.) 5.0.3 (SmashLadder default)"
+	read -r RESP
+	if [ "$RESP" -eq 2 ] 2> /dev/null; then
+	 	FMVERSION="5.0.3"
+		COMMITHASH="d462ca38724db65d7f92f3edbd16b6657291e420"
+		GITCLONELINK="https://github.com/Tinob/Ishiiruka"
+	else
+		FMVERSION="5.66"
+		COMMITHASH="cdc00a320232a3a5f023c1aa53d7f4619f322757"
+		GITCLONELINK="https://github.com/HannesMann/Ishiiruka"
+	fi
+	echo "Installing version $FMVERSION!"
+	CONFIGLINK="https://github.com/Ptomerty/FasterMelee-installer/raw/master/config/$FMVERSION-fmconfig.tar.gz"
 else
-	FMVERSION="5.66"
-	COMMITHASH="cdc00a320232a3a5f023c1aa53d7f4619f322757"
-	GITCLONELINK="https://github.com/HannesMann/Ishiiruka"
+	echo ""
+	echo "Attempting to install version $FMVERSION!"
 fi
-echo "Installing version $FMVERSION!"
-REPLACEFILELINK="https://github.com/Ptomerty/FasterMelee-installer/raw/master/config/$FMVERSION-fmconfig.tar.gz"
+
 FOLDERNAME="FasterMelee-${FMVERSION}_$(date +%F)"
 if [ -d "$FOLDERNAME" ]; then
 	I=1
@@ -93,7 +104,7 @@ echo "Using $CPUS thread(s)!"
 echo ""
 mkdir "$FOLDERNAME" && cd "$FOLDERNAME"
 echo "Downloading required replacement files..."
-wget $REPLACEFILELINK
+wget $CONFIGLINK
 echo "Extracting..."
 tar -xzf "$FMVERSION-fmconfig.tar.gz" && rm "$FMVERSION-fmconfig.tar.gz"	
 echo "Cloning repo (may take a while)..."
@@ -118,4 +129,4 @@ rm -f ../launch-faster-melee # -f required if shortcuts do not exist
 rm -f ../launch-fm
 ln -s "$FOLDERNAME/bin/dolphin-emu" ../launch-fm
 echo 'Done! Run ./launch-fm to run the latest installed version!'
-echo 'Make sure to unplug and replug your adapter before opening Dolphin for it to function!'
+echo 'Make sure to unplug and replug your adapter before opening Dolphin if rules were installed!'

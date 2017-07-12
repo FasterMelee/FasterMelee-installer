@@ -20,9 +20,15 @@ wget "https://github.com/Ptomerty/FasterMelee-installer/raw/master/setup"
 sh setup
 ```
 
+If a not-up-to-date version is needed (e.g. not Discord/SL default), edit the script and replace the desired variables.
+
+Packed config structure: Binaries/ -> User/, Sys/, portable.txt.
+
 ## Changelog
 
-v1.8.1: Cleans out incomplete installations, and offers multiple same-version-same-day support.
+v1.8.2: Bug fixes, modularity added.
+
+v1.8.1: Cleans out incomplete installations.
 
 v1.8: Rewrote installer, now includes dual support for 5.0.3 and 5.5, with prompts for everything else.
 
