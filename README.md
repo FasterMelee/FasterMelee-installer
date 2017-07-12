@@ -22,6 +22,8 @@ sh setup
 
 If a not-up-to-date version is needed (e.g. not Discord/SL default), edit the script and replace the desired variables.
 
+Packed config structure: Binaries/ -> User/, Sys/, portable.txt.
+
 ## Changelog
 
 v1.8.2: Bug fixes, modularity added.
