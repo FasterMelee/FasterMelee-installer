@@ -22,7 +22,6 @@ GITCLONELINK="" # Version of Ishiiruka
 CONFIGLINK="" # Packed configs, can be found under config/ or config/legacy/
 
 
-
 echo ""
 echo "Attempting to delete incomplete installations of FM..."
 for f in FasterMelee*; do
@@ -61,6 +60,9 @@ if [ -z "$FMVERSION" ] || [ -z "$COMMITHASH" ] || [ -z "$GITCLONELINK" ] || [ -z
 	fi
 	echo "Installing version $FMVERSION!"
 	CONFIGLINK="https://github.com/Ptomerty/FasterMelee-installer/raw/master/config/$FMVERSION-fmconfig.tar.gz"
+else
+	echo ""
+	echo "Attempting to install version $FMVERSION!"
 fi
 
 FOLDERNAME="FasterMelee-${FMVERSION}_$(date +%F)"
@@ -127,4 +129,4 @@ rm -f ../launch-faster-melee # -f required if shortcuts do not exist
 rm -f ../launch-fm
 ln -s "$FOLDERNAME/bin/dolphin-emu" ../launch-fm
 echo 'Done! Run ./launch-fm to run the latest installed version!'
-echo 'Make sure to unplug and replug your adapter before opening Dolphin for it to function!'
+echo 'Make sure to unplug and replug your adapter before opening Dolphin if rules were installed!'
