@@ -32,7 +32,7 @@ for f in FasterMelee*; do
 done
 
 echo "" # easiest way to print newline while preserving compatibility :P
-echo "Would you like to overwrite all of your previous installations? (y/N)"
+echo "Would you like to overwrite ALL of your previous installations? (y/N)"
 read -r RESP
 if [ "$RESP" = "y" ] 2> /dev/null || [ "$RESP" = "Y" ] 2> /dev/null; then
 	echo "Are you sure? This action is not reversible! (y/N)"
@@ -65,24 +65,24 @@ else
 	echo "Attempting to install version $FMVERSION!"
 fi
 
-FOLDERNAME="FasterMelee-${FMVERSION}_$(date +%F)"
+FOLDERNAME="FasterMelee-${FMVERSION}"
 if [ -d "$FOLDERNAME" ]; then
-	I=1
-	while :
-	do
-		if [ ! -d "${FOLDERNAME}_${I}" ]; then
-			FOLDERNAME="${FOLDERNAME}_${I}"
-			break
-		fi
-		I=$((I+1))
-	done
+	echo ""
+	echo "Same version found! Would you like to overwrite? (y/N)"
+	read -r RESP
+	if [ "$RESP" = "y" ] 2> /dev/null || [ "$RESP" = "Y" ] 2> /dev/null; then
+		rm -r "$FOLDERNAME"
+	else
+		echo "Quitting!"
+		exit
+	fi
 fi
 LOG="$(pwd)/$FOLDERNAME/log.txt"
 
 echo ""
-echo "Would you like to install rules for your Wii U adapter? (Y/n)"
+echo "Would you like to install rules for your Wii U adapter? (y/N)"
 read -r RESP
-if [ ! "$RESP" = "n" ] && [ ! "$RESP" = "N" ]; then
+if [ "$RESP" = "y" ] 2> /dev/null && [ "$RESP" = "Y" ] 2> /dev/null; then
 	sudo rm -f /etc/udev/rules.d/51-gcadapter.rules 2> /dev/null # remove even if doesn't exist
 	# sudo touch /etc/udev/rules.d/51-gcadapter.rules
 	echo 'SUBSYSTEM=="usb", ENV{DEVTYPE}=="usb_device", ATTRS{idVendor}=="057e", ATTRS{idProduct}=="0337", MODE="0666"' | sudo tee /etc/udev/rules.d/51-gcadapter.rules > /dev/null # pipe to write-protected file, remove STDOUT
@@ -103,15 +103,20 @@ echo "Using $CPUS thread(s)!"
 
 echo ""
 mkdir "$FOLDERNAME" && cd "$FOLDERNAME"
-echo "Downloading required replacement files..."
+echo "Downloading config files..."
 wget $CONFIGLINK
 echo "Extracting..."
 tar -xzf "$FMVERSION-fmconfig.tar.gz" && rm "$FMVERSION-fmconfig.tar.gz"	
-echo "Cloning repo (may take a while)..."
-git clone $GITCLONELINK
+echo "Downloading tarball..."
+wget "$GITCLONELINK/archive/$COMMITHASH.tar.gz"
+echo "Extracting..."
+tar -xzvf "Ishiiruka-$COMMITHASH.tar.gz" && rm "Ishiiruka-$COMMITHASH.tar.gz"
+mv "Ishiiruka-$COMMITHASH" Ishiiruka
 cd Ishiiruka
-echo "Switching to latest commit..."
-git checkout $COMMITHASH >> "$LOG" 2>&1
+echo "Patching tarball..."
+sed -i "s#\${GIT_EXECUTABLE} rev-parse HEAD#echo $COMMITHASH#g" CMakeLists.txt  # --set scm_rev_str everywhere to actual commit hash when downloaded
+sed -i "s#\${GIT_EXECUTABLE} describe --always --long --dirty#echo $(echo "$COMMITHASH" | cut -c1-9 )#g" CMakeLists.txt #ensures compatibility w/ netplay
+sed -i "s#\${GIT_EXECUTABLE} rev-parse --abbrev-ref HEAD#echo HEAD#g" CMakeLists.txt
 echo "Adding portable files..."
 mkdir build && cd build
 mv ../../Binaries .
