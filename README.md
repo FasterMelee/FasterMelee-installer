@@ -1,6 +1,6 @@
 # Faster Melee Installer for Linux
 
-A script for compiling Faster Melee (currently supported: **5.5** and **5.0.3**) on Linux.
+A script for compiling Faster Melee (currently supported: **5.66** and **5.0.3**) on Linux.
 
 Currently tested on Arch and Ubuntu 17.04. Older versions can be found under the "legacy" branch.
 
@@ -25,6 +25,8 @@ If a not-up-to-date version is needed (e.g. not Discord/SL default), edit the sc
 Packed config structure: Binaries/ -> User/, Sys/, portable.txt.
 
 ## Changelog
+
+v1.9: Portability readded, switched back to tarballs w/ patching.
 
 v1.8.2: Bug fixes, modularity added.
 
