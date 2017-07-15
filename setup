@@ -27,23 +27,25 @@ echo "Attempting to delete incomplete installations of FM..."
 for f in FasterMelee*; do
 	if [ -d "${f}" ] && [ ! -d "$f/bin" ]; then
 		echo "Found incomplete installation at $f/, deleting."
-		rm -rf "$f" # is incomplete if Binaries/ exists, contains config
+		rm -rf "$f" # is incomplete if bin/ doesn't exist
 	fi
 done
 
 echo "" # easiest way to print newline while preserving compatibility :P
 echo "Would you like to overwrite ALL of your previous installations? (y/N)"
 read -r RESP
-if [ "$RESP" = "y" ] 2> /dev/null || [ "$RESP" = "Y" ] 2> /dev/null; then
+if [ "$RESP" = "y" ] || [ "$RESP" = "Y" ]; then
 	echo "Are you sure? This action is not reversible! (y/N)"
 	read -r RESP
-	if [ "$RESP" = "y" ] 2> /dev/null || [ "$RESP" = "Y" ] 2> /dev/null; then
-		rm -rf FasterMelee*/ 2> /dev/null
+	if [ "$RESP" = "y" ] || [ "$RESP" = "Y" ] ; then
+		rm -rf FasterMelee*/
 		echo "Deleted all FM folders!"
 	fi
+else
+	echo "No changes made!"
 fi
 
-if [ -z "$FMVERSION" ] || [ -z "$COMMITHASH" ] || [ -z "$GITCLONELINK" ] || [ -z "$CONFIGLINK" ]; then #ORs used to ensure no mistakeseverything filled out
+if [ -z "$FMVERSION" ] || [ -z "$COMMITHASH" ] || [ -z "$GITCLONELINK" ] || [ -z "$CONFIGLINK" ]; then #ORs used to ensure everything filled out
 	echo ""
 	echo "Which version of Faster Melee would you like to install? (default: 1)"
 	echo "1.) 5.66 (Discord default)"
@@ -70,8 +72,16 @@ if [ -d "$FOLDERNAME" ]; then
 	echo ""
 	echo "FM Folder with same version found! Would you like to overwrite? (y/N)"
 	read -r RESP
-	if [ "$RESP" = "y" ] 2> /dev/null || [ "$RESP" = "Y" ] 2> /dev/null; then
-		rm -r "$FOLDERNAME"
+	if [ "$RESP" = "y" ] || [ "$RESP" = "Y" ]; then
+		echo "Are you sure? This action is not reversible! (y/N)"
+		read -r RESP
+		if [ "$RESP" = "y" ] || [ "$RESP" = "Y" ] ; then
+			rm -r "$FOLDERNAME"
+			echo "Deleted!"
+		else
+			echo "Quitting!"
+			exit
+		fi
 	else
 		echo "Quitting!"
 		exit
@@ -82,12 +92,13 @@ LOG="$(pwd)/$FOLDERNAME/log.txt"
 echo ""
 echo "Would you like to install rules for your Wii U adapter? (y/N)"
 read -r RESP
-if [ "$RESP" = "y" ] 2> /dev/null && [ "$RESP" = "Y" ] 2> /dev/null; then
+if [ "$RESP" = "y" ] || [ "$RESP" = "Y" ]; then
 	sudo rm -f /etc/udev/rules.d/51-gcadapter.rules # remove even if doesn't exist
-	# sudo touch /etc/udev/rules.d/51-gcadapter.rules
 	echo 'SUBSYSTEM=="usb", ENV{DEVTYPE}=="usb_device", ATTRS{idVendor}=="057e", ATTRS{idProduct}=="0337", MODE="0666"' | sudo tee /etc/udev/rules.d/51-gcadapter.rules > /dev/null # pipe to write-protected file, remove STDOUT
 	sudo udevadm control --reload-rules
 	echo "Rules added!"
+else
+	echo "No changes made!"
 fi
 
 echo ""
@@ -110,19 +121,19 @@ tar -xzf "$FMVERSION-fmconfig.tar.gz" && rm "$FMVERSION-fmconfig.tar.gz"
 echo "Downloading tarball..."
 wget "$GITCLONELINK/archive/$COMMITHASH.tar.gz"
 echo "Extracting..."
-tar -xzvf "Ishiiruka-$COMMITHASH.tar.gz" && rm "Ishiiruka-$COMMITHASH.tar.gz"
+tar -xzf "$COMMITHASH.tar.gz" && rm "$COMMITHASH.tar.gz"
 mv "Ishiiruka-$COMMITHASH" Ishiiruka
 cd Ishiiruka
 echo "Patching tarball..."
 sed -i "s#\${GIT_EXECUTABLE} rev-parse HEAD#echo $COMMITHASH#g" CMakeLists.txt  # --set scm_rev_str everywhere to actual commit hash when downloaded
 sed -i "s#\${GIT_EXECUTABLE} describe --always --long --dirty#echo $(echo "$COMMITHASH" | cut -c1-9 )#g" CMakeLists.txt #ensures compatibility w/ netplay
 sed -i "s#\${GIT_EXECUTABLE} rev-parse --abbrev-ref HEAD#echo HEAD#g" CMakeLists.txt
-echo "Adding portable files..."
+echo "Adding FM config files..."
 mkdir build && cd build
 mv ../../Binaries .
 echo "cmaking..."
 cmake .. -DLINUX_LOCAL_DEV=true >>"$LOG" 2>&1
-echo "Compiling...(Verbose, will take a while)"
+echo "Compiling..."
 make -j $CPUS 2>>"$LOG" # gets rid of errors as to not cause confusion
 
 echo "Cleaning up..."
