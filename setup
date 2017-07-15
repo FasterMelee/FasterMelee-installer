@@ -68,7 +68,7 @@ fi
 FOLDERNAME="FasterMelee-${FMVERSION}"
 if [ -d "$FOLDERNAME" ]; then
 	echo ""
-	echo "Same version found! Would you like to overwrite? (y/N)"
+	echo "FM Folder with same version found! Would you like to overwrite? (y/N)"
 	read -r RESP
 	if [ "$RESP" = "y" ] 2> /dev/null || [ "$RESP" = "Y" ] 2> /dev/null; then
 		rm -r "$FOLDERNAME"
