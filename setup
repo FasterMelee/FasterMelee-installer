@@ -48,7 +48,7 @@ fi
 if [ -z "$FMVERSION" ] || [ -z "$COMMITHASH" ] || [ -z "$GITCLONELINK" ] || [ -z "$CONFIGLINK" ]; then #ORs used to ensure everything filled out
 	echo ""
 	echo "Which version of Faster Melee would you like to install? (default: 1)"
-	echo "1.) 5.66 (Discord default)"
+	echo "1.) 5.7 (Discord default)"
 	echo "2.) 5.0.3 (SmashLadder default)"
 	read -r RESP
 	if [ "$RESP" -eq 2 ] 2> /dev/null; then
@@ -56,8 +56,8 @@ if [ -z "$FMVERSION" ] || [ -z "$COMMITHASH" ] || [ -z "$GITCLONELINK" ] || [ -z
 		COMMITHASH="d462ca38724db65d7f92f3edbd16b6657291e420"
 		GITCLONELINK="https://github.com/Tinob/Ishiiruka"
 	else
-		FMVERSION="5.66"
-		COMMITHASH="cdc00a320232a3a5f023c1aa53d7f4619f322757"
+		FMVERSION="5.7"
+		COMMITHASH="1c02544648bae8cdb0ed590bcf47d7e224b50278"
 		GITCLONELINK="https://github.com/HannesMann/Ishiiruka"
 	fi
 	echo "Installing version $FMVERSION!"
