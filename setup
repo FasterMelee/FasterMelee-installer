@@ -57,7 +57,7 @@ if [ -z "$FMVERSION" ] || [ -z "$COMMITHASH" ] || [ -z "$GITCLONELINK" ] || [ -z
 		GITCLONELINK="https://github.com/Tinob/Ishiiruka"
 	else
 		FMVERSION="5.7"
-		COMMITHASH="1c02544648bae8cdb0ed590bcf47d7e224b50278"
+		COMMITHASH="ce994a2cea882bf4d145df87554e43314331cf9a"
 		GITCLONELINK="https://github.com/HannesMann/Ishiiruka"
 	fi
 	echo "Installing version $FMVERSION!"
