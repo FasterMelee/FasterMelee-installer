@@ -1,6 +1,6 @@
 # Faster Melee Installer for Linux
 
-A script for compiling Faster Melee (currently supported: **5.5** and **5.0.3**) on Linux.
+A script for compiling Faster Melee (currently supported: **5.66** and **5.0.3**) on Linux.
 
 Currently tested on Arch and Ubuntu 17.04. Older versions can be found under the "legacy" branch.
 
