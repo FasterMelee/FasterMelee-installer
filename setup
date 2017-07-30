@@ -27,26 +27,28 @@ echo "Attempting to delete incomplete installations of FM..."
 for f in FasterMelee*; do
 	if [ -d "${f}" ] && [ ! -d "$f/bin" ]; then
 		echo "Found incomplete installation at $f/, deleting."
-		rm -rf "$f" # is incomplete if Binaries/ exists, contains config
+		rm -rf "$f" # is incomplete if bin/ doesn't exist
 	fi
 done
 
 echo "" # easiest way to print newline while preserving compatibility :P
-echo "Would you like to overwrite all of your previous installations? (y/N)"
+echo "Would you like to overwrite ALL of your previous installations? (y/N)"
 read -r RESP
-if [ "$RESP" = "y" ] 2> /dev/null || [ "$RESP" = "Y" ] 2> /dev/null; then
+if [ "$RESP" = "y" ] || [ "$RESP" = "Y" ]; then
 	echo "Are you sure? This action is not reversible! (y/N)"
 	read -r RESP
-	if [ "$RESP" = "y" ] 2> /dev/null || [ "$RESP" = "Y" ] 2> /dev/null; then
-		rm -rf FasterMelee*/ 2> /dev/null
+	if [ "$RESP" = "y" ] || [ "$RESP" = "Y" ] ; then
+		rm -rf FasterMelee*/
 		echo "Deleted all FM folders!"
 	fi
+else
+	echo "No changes made!"
 fi
 
-if [ -z "$FMVERSION" ] || [ -z "$COMMITHASH" ] || [ -z "$GITCLONELINK" ] || [ -z "$CONFIGLINK" ]; then #ORs used to ensure no mistakeseverything filled out
+if [ -z "$FMVERSION" ] || [ -z "$COMMITHASH" ] || [ -z "$GITCLONELINK" ] || [ -z "$CONFIGLINK" ]; then #ORs used to ensure everything filled out
 	echo ""
 	echo "Which version of Faster Melee would you like to install? (default: 1)"
-	echo "1.) 5.66 (Discord default)"
+	echo "1.) 5.7 (Discord default)"
 	echo "2.) 5.0.3 (SmashLadder default)"
 	read -r RESP
 	if [ "$RESP" -eq 2 ] 2> /dev/null; then
@@ -54,8 +56,8 @@ if [ -z "$FMVERSION" ] || [ -z "$COMMITHASH" ] || [ -z "$GITCLONELINK" ] || [ -z
 		COMMITHASH="d462ca38724db65d7f92f3edbd16b6657291e420"
 		GITCLONELINK="https://github.com/Tinob/Ishiiruka"
 	else
-		FMVERSION="5.66"
-		COMMITHASH="cdc00a320232a3a5f023c1aa53d7f4619f322757"
+		FMVERSION="5.7"
+		COMMITHASH="ce994a2cea882bf4d145df87554e43314331cf9a"
 		GITCLONELINK="https://github.com/HannesMann/Ishiiruka"
 	fi
 	echo "Installing version $FMVERSION!"
@@ -65,29 +67,38 @@ else
 	echo "Attempting to install version $FMVERSION!"
 fi
 
-FOLDERNAME="FasterMelee-${FMVERSION}_$(date +%F)"
+FOLDERNAME="FasterMelee-${FMVERSION}"
 if [ -d "$FOLDERNAME" ]; then
-	I=1
-	while :
-	do
-		if [ ! -d "${FOLDERNAME}_${I}" ]; then
-			FOLDERNAME="${FOLDERNAME}_${I}"
-			break
+	echo ""
+	echo "FM Folder with same version found! Would you like to overwrite? (y/N)"
+	read -r RESP
+	if [ "$RESP" = "y" ] || [ "$RESP" = "Y" ]; then
+		echo "Are you sure? This action is not reversible! (y/N)"
+		read -r RESP
+		if [ "$RESP" = "y" ] || [ "$RESP" = "Y" ] ; then
+			rm -r "$FOLDERNAME"
+			echo "Deleted!"
+		else
+			echo "Quitting!"
+			exit
 		fi
-		I=$((I+1))
-	done
+	else
+		echo "Quitting!"
+		exit
+	fi
 fi
 LOG="$(pwd)/$FOLDERNAME/log.txt"
 
 echo ""
-echo "Would you like to install rules for your Wii U adapter? (Y/n)"
+echo "Would you like to install rules for your Wii U adapter? (y/N)"
 read -r RESP
-if [ ! "$RESP" = "n" ] && [ ! "$RESP" = "N" ]; then
-	sudo rm -f /etc/udev/rules.d/51-gcadapter.rules 2> /dev/null # remove even if doesn't exist
-	# sudo touch /etc/udev/rules.d/51-gcadapter.rules
+if [ "$RESP" = "y" ] || [ "$RESP" = "Y" ]; then
+	sudo rm -f /etc/udev/rules.d/51-gcadapter.rules # remove even if doesn't exist
 	echo 'SUBSYSTEM=="usb", ENV{DEVTYPE}=="usb_device", ATTRS{idVendor}=="057e", ATTRS{idProduct}=="0337", MODE="0666"' | sudo tee /etc/udev/rules.d/51-gcadapter.rules > /dev/null # pipe to write-protected file, remove STDOUT
 	sudo udevadm control --reload-rules
 	echo "Rules added!"
+else
+	echo "No changes made!"
 fi
 
 echo ""
@@ -103,21 +114,26 @@ echo "Using $CPUS thread(s)!"
 
 echo ""
 mkdir "$FOLDERNAME" && cd "$FOLDERNAME"
-echo "Downloading required replacement files..."
+echo "Downloading config files..."
 wget $CONFIGLINK
 echo "Extracting..."
 tar -xzf "$FMVERSION-fmconfig.tar.gz" && rm "$FMVERSION-fmconfig.tar.gz"	
-echo "Cloning repo (may take a while)..."
-git clone $GITCLONELINK
+echo "Downloading tarball..."
+wget "$GITCLONELINK/archive/$COMMITHASH.tar.gz"
+echo "Extracting..."
+tar -xzf "$COMMITHASH.tar.gz" && rm "$COMMITHASH.tar.gz"
+mv "Ishiiruka-$COMMITHASH" Ishiiruka
 cd Ishiiruka
-echo "Switching to latest commit..."
-git checkout $COMMITHASH >> "$LOG" 2>&1
-echo "Adding portable files..."
+echo "Patching tarball..."
+sed -i "s#\${GIT_EXECUTABLE} rev-parse HEAD#echo $COMMITHASH#g" CMakeLists.txt  # --set scm_rev_str everywhere to actual commit hash when downloaded
+sed -i "s#\${GIT_EXECUTABLE} describe --always --long --dirty#echo $(echo "$COMMITHASH" | cut -c1-9 )#g" CMakeLists.txt #ensures compatibility w/ netplay
+sed -i "s#\${GIT_EXECUTABLE} rev-parse --abbrev-ref HEAD#echo HEAD#g" CMakeLists.txt
+echo "Adding FM config files..."
 mkdir build && cd build
 mv ../../Binaries .
 echo "cmaking..."
 cmake .. -DLINUX_LOCAL_DEV=true >>"$LOG" 2>&1
-echo "Compiling...(Verbose, will take a while)"
+echo "Compiling..."
 make -j $CPUS 2>>"$LOG" # gets rid of errors as to not cause confusion
 
 echo "Cleaning up..."
