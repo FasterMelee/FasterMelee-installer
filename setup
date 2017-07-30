@@ -61,7 +61,7 @@ if [ -z "$FMVERSION" ] || [ -z "$COMMITHASH" ] || [ -z "$GITCLONELINK" ] || [ -z
 		GITCLONELINK="https://github.com/HannesMann/Ishiiruka"
 	fi
 	echo "Installing version $FMVERSION!"
-	CONFIGLINK="https://github.com/Ptomerty/FasterMelee-installer/raw/tarball/config/$FMVERSION-fmconfig.tar.gz"
+	CONFIGLINK="https://github.com/Ptomerty/FasterMelee-installer/raw/master/config/$FMVERSION-fmconfig.tar.gz"
 else
 	echo ""
 	echo "Attempting to install version $FMVERSION!"
