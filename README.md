@@ -26,6 +26,8 @@ Packed config structure: Binaries/ -> User/, Sys/, portable.txt.
 
 ## Changelog
 
+v1.9: Portability readded; switched back to tarballs w/ patching; removed date timestamp, now prompts to overwrite.
+
 v1.8.2: Bug fixes, modularity added.
 
 v1.8.1: Cleans out incomplete installations.
