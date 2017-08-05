@@ -16,8 +16,7 @@ DEBIAN JESSIE users note: `libavformat-dev` must be installed from jessie-backpo
 ## To use:
 
 ```sh
-wget "https://github.com/Ptomerty/FasterMelee-installer/raw/master/setup"
-sh setup
+sh -c "$(wget -qO - https://github.com/Ptomerty/FasterMelee-installer/raw/master/setup)"
 ```
 
 If a not-up-to-date version is needed (e.g. not Discord/SL default), edit the script and replace the desired variables.
