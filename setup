@@ -22,8 +22,8 @@ GITCLONELINK="" # Version of Ishiiruka
 CONFIGLINK="" # Packed configs, can be found under config/ or config/legacy/
 
 
-echo ""
-echo "Attempting to delete incomplete installations of FM..."
+echo "
+Attempting to delete incomplete installations of FM..."
 for f in FasterMelee*; do
 	if [ -d "${f}" ] && [ ! -d "$f/bin" ]; then
 		echo "Found incomplete installation at $f/, deleting."
@@ -31,8 +31,8 @@ for f in FasterMelee*; do
 	fi
 done
 
-echo "" # easiest way to print newline while preserving compatibility :P
-echo "Would you like to overwrite ALL of your previous installations? (y/N)"
+echo "
+Would you like to overwrite ALL of your previous installations? (y/N)"
 read -r RESP
 if [ "$RESP" = "y" ] || [ "$RESP" = "Y" ]; then
 	echo "Are you sure? This action is not reversible! (y/N)"
@@ -46,8 +46,8 @@ else
 fi
 
 if [ -z "$FMVERSION" ] || [ -z "$COMMITHASH" ] || [ -z "$GITCLONELINK" ] || [ -z "$CONFIGLINK" ]; then #ORs used to ensure everything filled out
-	echo ""
-	echo "Which version of Faster Melee would you like to install? (default: 1)"
+	echo "
+	Which version of Faster Melee would you like to install? (default: 1)"
 	echo "1.) 5.7 (Discord default)"
 	echo "2.) 5.0.3 (SmashLadder default)"
 	read -r RESP
@@ -63,14 +63,14 @@ if [ -z "$FMVERSION" ] || [ -z "$COMMITHASH" ] || [ -z "$GITCLONELINK" ] || [ -z
 	echo "Installing version $FMVERSION!"
 	CONFIGLINK="https://github.com/Ptomerty/FasterMelee-installer/raw/master/config/$FMVERSION-fmconfig.tar.gz"
 else
-	echo ""
-	echo "Attempting to install version $FMVERSION!"
+	echo "
+	Attempting to install version $FMVERSION!"
 fi
 
 FOLDERNAME="FasterMelee-${FMVERSION}"
 if [ -d "$FOLDERNAME" ]; then
-	echo ""
-	echo "FM Folder with same version found! Would you like to overwrite? (y/N)"
+	echo "
+	FM Folder with same version found! Would you like to overwrite? (y/N)"
 	read -r RESP
 	if [ "$RESP" = "y" ] || [ "$RESP" = "Y" ]; then
 		echo "Are you sure? This action is not reversible! (y/N)"
@@ -89,8 +89,8 @@ if [ -d "$FOLDERNAME" ]; then
 fi
 LOG="$(pwd)/$FOLDERNAME/log.txt"
 
-echo ""
-echo "Would you like to install rules for your Wii U adapter? (y/N)"
+echo "
+Would you like to install rules for your Wii U adapter? (y/N)"
 read -r RESP
 if [ "$RESP" = "y" ] || [ "$RESP" = "Y" ]; then
 	sudo rm -f /etc/udev/rules.d/51-gcadapter.rules # remove even if doesn't exist
@@ -99,6 +99,22 @@ if [ "$RESP" = "y" ] || [ "$RESP" = "Y" ]; then
 	echo "Rules added!"
 else
 	echo "No changes made!"
+
+
+echo "
+Would you like to make a desktop shortcut? (Y/n)"
+if ! [ "$RESP" = "n" ] || ! [ "$RESP" = "Y" ]; then
+	EXEPATH="$(dirname $(readlink -f "$0"))/$FOLDERNAME/bin/dolphin-emu"
+	FMNAME="Faster Melee $FMVERSION"
+	echo "[Desktop Entry]
+	Type=Application
+	GenericName=Wii/GameCube Emulator
+	Comment=Ishiiruka fork for SSBM
+	Categories=Emulator;Game;
+	Icon=dolphin-emu
+	Version=$FMVERSION
+	Name=$FMNAME
+	Exec=$EXEPATH" | ~/.local/share/applications/faster-melee.desktop
 fi
 
 echo ""
