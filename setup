@@ -104,7 +104,7 @@ else
 echo "
 Would you like to make a desktop shortcut? (Y/n)"
 if ! [ "$RESP" = "n" ] || ! [ "$RESP" = "Y" ]; then
-	EXEPATH="$(dirname $(readlink -f "$0"))/$FOLDERNAME/bin/dolphin-emu"
+	EXEPATH="$(pwd)/$FOLDERNAME/bin/dolphin-emu"
 	FMNAME="Faster Melee $FMVERSION"
 	echo "[Desktop Entry]
 	Type=Application
