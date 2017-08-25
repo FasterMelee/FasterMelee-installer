@@ -99,6 +99,7 @@ if [ "$RESP" = "y" ] || [ "$RESP" = "Y" ]; then
 	echo "Rules added!"
 else
 	echo "No changes made!"
+fi
 
 
 echo "
