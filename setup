@@ -131,6 +131,7 @@ sed -i "s#\${GIT_EXECUTABLE} rev-parse --abbrev-ref HEAD#echo HEAD#g" CMakeLists
 echo "Adding FM config files..."
 mkdir build && cd build
 mv ../../Binaries .
+mv ../Data/dolphin-emu.png dolphin-emu.png
 echo "cmaking..."
 cmake .. -DLINUX_LOCAL_DEV=true >>"$LOG" 2>&1
 echo "Compiling..."
@@ -143,8 +144,7 @@ mv Ishiiruka/build/Binaries/ bin/
 rm -rf Ishiiruka # -f required to remove git history
 rm -f ../launch-faster-melee # -f required if shortcuts do not exist
 rm -f ../launch-fm
-<<<<<<< HEAD
-=======
+
 
 echo "Creating shortcuts..."
 if [ "$SHORTCUTBOOL" -eq 1 ]; then
@@ -161,7 +161,11 @@ Version=$FMVERSION
 Name=$FMNAME
 Exec=$EXEPATH/dolphin-emu" | tee ~/.local/share/applications/faster-melee-$FMVERSION.desktop > /dev/null
 fi
->>>>>>> af5c1f1218368869d8d530ce98dbd2ebed011efe
+
 ln -s "$FOLDERNAME/bin/dolphin-emu" ../launch-fm
-echo 'Done! Run ./launch-fm to run the latest installed version!'
-echo 'Make sure to unplug and replug your adapter before opening Dolphin if rules were installed!'
+echo ""
+echo "*******************************************************************************************"
+echo "Done! Run ./launch-fm to run the latest installed version!"
+echo "Alternatively, go to Application > Games and select the desired version."
+echo "Make sure to unplug and replug your adapter before opening Dolphin if rules were installed!"
+echo "*******************************************************************************************"
