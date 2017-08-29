@@ -130,6 +130,7 @@ echo "Downloading config files..."
 wget $CONFIGLINK
 echo "Extracting..."
 tar -xzf "$FMVERSION-fmconfig.tar.gz" && rm "$FMVERSION-fmconfig.tar.gz"	
+exit
 echo "Downloading tarball..."
 wget "$GITCLONELINK/archive/$COMMITHASH.tar.gz"
 echo "Extracting..."
@@ -159,17 +160,17 @@ rm -f ../launch-fm
 echo "Creating shortcuts..."
 if [ "$SHORTCUTBOOL" -eq 1 ]; then
 	rm -f ~/.local/share/applications/faster-melee-$FMVERSION.desktop # remove old shortcut
-	EXEPATH="$(pwd)/bin/dolphin-emu"
+	EXEPATH="$(pwd)/bin"
 	FMNAME="Faster Melee $FMVERSION"
 	echo "[Desktop Entry]
-	Type=Application
-	GenericName=Wii/GameCube Emulator
-	Comment=Ishiiruka fork for SSBM
-	Categories=Emulator;Game;
-	Icon=dolphin-emu
-	Version=$FMVERSION
-	Name=$FMNAME
-	Exec=$EXEPATH" | tee ~/.local/share/applications/faster-melee-$FMVERSION.desktop > /dev/null
+Type=Application
+GenericName=Wii/GameCube Emulator
+Comment=Ishiiruka fork for SSBM
+Categories=Emulator;Game;
+Icon=$EXEPATH/Dolphin.png
+Version=$FMVERSION
+Name=$FMNAME
+Exec=$EXEPATH/dolphin-emu" | tee ~/.local/share/applications/faster-melee-$FMVERSION.desktop > /dev/null
 fi
 ln -s "$FOLDERNAME/bin/dolphin-emu" ../launch-fm
 
