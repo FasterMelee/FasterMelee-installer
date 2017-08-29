@@ -21,6 +21,8 @@ COMMITHASH="" # full commit hash
 GITCLONELINK="" # Version of Ishiiruka
 CONFIGLINK="" # Packed configs, can be found under config/ or config/legacy/
 
+PWD="$(pwd)"
+
 
 echo "
 Attempting to delete incomplete installations of FM..."
@@ -46,8 +48,8 @@ else
 fi
 
 if [ -z "$FMVERSION" ] || [ -z "$COMMITHASH" ] || [ -z "$GITCLONELINK" ] || [ -z "$CONFIGLINK" ]; then #ORs used to ensure everything filled out
-	echo "
-	Which version of Faster Melee would you like to install? (default: 1)"
+	echo ""
+	echo "Which version of Faster Melee would you like to install? (default: 1)"
 	echo "1.) 5.7 (Discord default)"
 	echo "2.) 5.0.3 (SmashLadder default)"
 	read -r RESP
@@ -101,31 +103,26 @@ else
 	echo "No changes made!"
 fi
 
-
 echo "
 Would you like to make a desktop shortcut? (Y/n)"
-if ! [ "$RESP" = "n" ] || ! [ "$RESP" = "Y" ]; then
-	EXEPATH="$(pwd)/$FOLDERNAME/bin/dolphin-emu"
-	FMNAME="Faster Melee $FMVERSION"
-	echo "[Desktop Entry]
-	Type=Application
-	GenericName=Wii/GameCube Emulator
-	Comment=Ishiiruka fork for SSBM
-	Categories=Emulator;Game;
-	Icon=dolphin-emu
-	Version=$FMVERSION
-	Name=$FMNAME
-	Exec=$EXEPATH" | ~/.local/share/applications/faster-melee.desktop
+read -r RESP
+if [ ! "$RESP" = "n" ] && [ ! "$RESP" = "N" ]; then
+	SHORTCUTBOOL=1
+	echo "Desktop shortcut queued!"
+else
+	SHORTCUTBOOL=0
+	echo "No changes made!"
 fi
+
 
 echo ""
 echo "CPU Threads detected: $CPUS"
-echo "How many threads would you like to use to compile? (passed to make as -j flag, default: 1, max: $((CPUS + 1)))"
+echo "How many threads would you like to use to compile? (passed to make as -j flag, default: $((CPUS + 1)), range: 1-$((CPUS + 1)))"
 read -r RESP
 if [ "$RESP" -ge 1 ] 2> /dev/null && [ "$RESP" -le $((CPUS + 1)) ] 2> /dev/null; then
 	CPUS=$RESP 
 else
-	CPUS=1
+	CPUS=$((CPUS + 1))
 fi
 echo "Using $CPUS thread(s)!"
 
@@ -143,7 +140,7 @@ mv "Ishiiruka-$COMMITHASH" Ishiiruka
 cd Ishiiruka
 echo "Patching tarball..."
 sed -i "s#\${GIT_EXECUTABLE} rev-parse HEAD#echo $COMMITHASH#g" CMakeLists.txt  # --set scm_rev_str everywhere to actual commit hash when downloaded
-sed -i "s#\${GIT_EXECUTABLE} describe --always --long --dirty#echo $(echo "$COMMITHASH" | cut -c1-9 )#g" CMakeLists.txt #ensures compatibility w/ netplay
+sed -i "s#\${GIT_EXECUTABLE} describe --always --long --dirty#echo $(echo "$COMMITHASH" | cut -c1-9 )#g" CMakeLists.txt # ensures compatibility w/ netplay
 sed -i "s#\${GIT_EXECUTABLE} rev-parse --abbrev-ref HEAD#echo HEAD#g" CMakeLists.txt
 echo "Adding FM config files..."
 mkdir build && cd build
@@ -160,6 +157,27 @@ mv Ishiiruka/build/Binaries/ bin/
 rm -rf Ishiiruka # -f required to remove git history
 rm -f ../launch-faster-melee # -f required if shortcuts do not exist
 rm -f ../launch-fm
+
+echo "Creating shortcuts..."
+if [ "$SHORTCUTBOOL" -eq 1 ]; then
+	rm -f ~/.local/share/applications/faster-melee-$FMVERSION.desktop # remove old shortcut
+	EXEPATH="$PWD/bin/dolphin-emu"
+	FMNAME="Faster Melee $FMVERSION"
+	echo "[Desktop Entry]
+	Type=Application
+	GenericName=Wii/GameCube Emulator
+	Comment=Ishiiruka fork for SSBM
+	Categories=Emulator;Game;
+	Icon=dolphin-emu
+	Version=$FMVERSION
+	Name=$FMNAME
+	Exec=$EXEPATH" | tee ~/.local/share/applications/faster-melee-$FMVERSION.desktop > /dev/null
+fi
 ln -s "$FOLDERNAME/bin/dolphin-emu" ../launch-fm
-echo 'Done! Run ./launch-fm to run the latest installed version!'
-echo 'Make sure to unplug and replug your adapter before opening Dolphin if rules were installed!'
+
+echo ""
+echo "*******************************************************************************************"
+echo "Done! Run ./launch-fm to run the latest installed version!"
+echo "Alternatively, go to Application > Games and select the desired version."
+echo "Make sure to unplug and replug your adapter before opening Dolphin if rules were installed!"
+echo "*******************************************************************************************"
