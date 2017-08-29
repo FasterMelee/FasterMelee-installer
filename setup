@@ -160,6 +160,7 @@ rm -f ../launch-fm
 echo "Creating shortcuts..."
 if [ "$SHORTCUTBOOL" -eq 1 ]; then
 	rm -f ~/.local/share/applications/faster-melee-$FMVERSION.desktop # remove old shortcut
+	rm -f ~/Desktop/faster-melee-$FMVERSION.desktop
 	EXEPATH="$(pwd)/bin"
 	FMNAME="Faster Melee $FMVERSION"
 	echo "[Desktop Entry]
@@ -171,12 +172,14 @@ Icon=$EXEPATH/dolphin-emu.png
 Version=$FMVERSION
 Name=$FMNAME
 Exec=$EXEPATH/dolphin-emu" | tee ~/.local/share/applications/faster-melee-$FMVERSION.desktop > /dev/null
+	cp ~/.local/share/applications/faster-melee-$FMVERSION.desktop ~/Desktop
+	chmod +x ~/Desktop/faster-melee-$FMVERSION.desktop
 fi
 ln -s "$FOLDERNAME/bin/dolphin-emu" ../launch-fm
 
 echo ""
 echo "*******************************************************************************************"
 echo "Done! Run ./launch-fm to run the latest installed version!"
-echo "Alternatively, go to Application > Games and select the desired version."
+echo "Alternatively, go to Application > Games or your desktop and select the desired version."
 echo "Make sure to unplug and replug your adapter before opening Dolphin if rules were installed!"
 echo "*******************************************************************************************"
