@@ -22,8 +22,8 @@ GITCLONELINK="" # Version of Ishiiruka
 CONFIGLINK="" # Packed configs, can be found under config/ or config/legacy/
 
 
-echo "
-Attempting to delete incomplete installations of FM..."
+echo ""
+echo "Attempting to delete incomplete installations of FM..."
 for f in FasterMelee*; do
 	if [ -d "${f}" ] && [ ! -d "$f/bin" ]; then
 		echo "Found incomplete installation at $f/, deleting."
@@ -31,8 +31,8 @@ for f in FasterMelee*; do
 	fi
 done
 
-echo "
-Would you like to overwrite ALL of your previous installations? (y/N)"
+echo "" # easiest way to print newline while preserving compatibility :P
+echo "Would you like to overwrite ALL of your previous installations? (y/N)"
 read -r RESP
 if [ "$RESP" = "y" ] || [ "$RESP" = "Y" ]; then
 	echo "Are you sure? This action is not reversible! (y/N)"
@@ -63,14 +63,14 @@ if [ -z "$FMVERSION" ] || [ -z "$COMMITHASH" ] || [ -z "$GITCLONELINK" ] || [ -z
 	echo "Installing version $FMVERSION!"
 	CONFIGLINK="https://github.com/Ptomerty/FasterMelee-installer/raw/master/config/$FMVERSION-fmconfig.tar.gz"
 else
-	echo "
-	Attempting to install version $FMVERSION!"
+	echo ""
+	echo "Attempting to install version $FMVERSION!"
 fi
 
 FOLDERNAME="FasterMelee-${FMVERSION}"
 if [ -d "$FOLDERNAME" ]; then
-	echo "
-	FM Folder with same version found! Would you like to overwrite? (y/N)"
+	echo ""
+	echo "FM Folder with same version found! Would you like to overwrite? (y/N)"
 	read -r RESP
 	if [ "$RESP" = "y" ] || [ "$RESP" = "Y" ]; then
 		echo "Are you sure? This action is not reversible! (y/N)"
@@ -89,8 +89,8 @@ if [ -d "$FOLDERNAME" ]; then
 fi
 LOG="$(pwd)/$FOLDERNAME/log.txt"
 
-echo "
-Would you like to install rules for your Wii U adapter? (y/N)"
+echo ""
+echo "Would you like to install rules for your Wii U adapter? (y/N)"
 read -r RESP
 if [ "$RESP" = "y" ] || [ "$RESP" = "Y" ]; then
 	sudo rm -f /etc/udev/rules.d/51-gcadapter.rules # remove even if doesn't exist
@@ -101,26 +101,14 @@ else
 	echo "No changes made!"
 fi
 
-echo "
-Would you like to make a desktop shortcut? (Y/n)"
-read -r RESP
-if [ ! "$RESP" = "n" ] && [ ! "$RESP" = "N" ]; then
-	SHORTCUTBOOL=1
-	echo "Desktop shortcut queued!"
-else
-	SHORTCUTBOOL=0
-	echo "No changes made!"
-fi
-
-
 echo ""
 echo "CPU Threads detected: $CPUS"
-echo "How many threads would you like to use to compile? (passed to make as -j flag, default: $((CPUS + 1)), range: 1-$((CPUS + 1)))"
+echo "How many threads would you like to use to compile? (passed to make as -j flag, default: 1, max: $((CPUS + 1)))"
 read -r RESP
 if [ "$RESP" -ge 1 ] 2> /dev/null && [ "$RESP" -le $((CPUS + 1)) ] 2> /dev/null; then
 	CPUS=$RESP 
 else
-	CPUS=$((CPUS + 1))
+	CPUS=1
 fi
 echo "Using $CPUS thread(s)!"
 
@@ -138,7 +126,7 @@ mv "Ishiiruka-$COMMITHASH" Ishiiruka
 cd Ishiiruka
 echo "Patching tarball..."
 sed -i "s#\${GIT_EXECUTABLE} rev-parse HEAD#echo $COMMITHASH#g" CMakeLists.txt  # --set scm_rev_str everywhere to actual commit hash when downloaded
-sed -i "s#\${GIT_EXECUTABLE} describe --always --long --dirty#echo $(echo "$COMMITHASH" | cut -c1-9 )#g" CMakeLists.txt # ensures compatibility w/ netplay
+sed -i "s#\${GIT_EXECUTABLE} describe --always --long --dirty#echo $(echo "$COMMITHASH" | cut -c1-9 )#g" CMakeLists.txt #ensures compatibility w/ netplay
 sed -i "s#\${GIT_EXECUTABLE} rev-parse --abbrev-ref HEAD#echo HEAD#g" CMakeLists.txt
 echo "Adding FM config files..."
 mkdir build && cd build
@@ -155,27 +143,6 @@ mv Ishiiruka/build/Binaries/ bin/
 rm -rf Ishiiruka # -f required to remove git history
 rm -f ../launch-faster-melee # -f required if shortcuts do not exist
 rm -f ../launch-fm
-
-echo "Creating shortcuts..."
-if [ "$SHORTCUTBOOL" -eq 1 ]; then
-	rm -f ~/.local/share/applications/faster-melee-$FMVERSION.desktop # remove old shortcut
-	EXEPATH="$(pwd)/bin/dolphin-emu"
-	FMNAME="Faster Melee $FMVERSION"
-	echo "[Desktop Entry]
-	Type=Application
-	GenericName=Wii/GameCube Emulator
-	Comment=Ishiiruka fork for SSBM
-	Categories=Emulator;Game;
-	Icon=dolphin-emu
-	Version=$FMVERSION
-	Name=$FMNAME
-	Exec=$EXEPATH" | tee ~/.local/share/applications/faster-melee-$FMVERSION.desktop > /dev/null
-fi
 ln -s "$FOLDERNAME/bin/dolphin-emu" ../launch-fm
-
-echo ""
-echo "*******************************************************************************************"
-echo "Done! Run ./launch-fm to run the latest installed version!"
-echo "Alternatively, go to Application > Games and select the desired version."
-echo "Make sure to unplug and replug your adapter before opening Dolphin if rules were installed!"
-echo "*******************************************************************************************"
+echo 'Done! Run ./launch-fm to run the latest installed version!'
+echo 'Make sure to unplug and replug your adapter before opening Dolphin if rules were installed!'
