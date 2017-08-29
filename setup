@@ -143,6 +143,25 @@ mv Ishiiruka/build/Binaries/ bin/
 rm -rf Ishiiruka # -f required to remove git history
 rm -f ../launch-faster-melee # -f required if shortcuts do not exist
 rm -f ../launch-fm
+<<<<<<< HEAD
+=======
+
+echo "Creating shortcuts..."
+if [ "$SHORTCUTBOOL" -eq 1 ]; then
+	rm -f ~/.local/share/applications/faster-melee-$FMVERSION.desktop # remove old shortcut
+	EXEPATH="$(pwd)/bin"
+	FMNAME="Faster Melee $FMVERSION"
+	echo "[Desktop Entry]
+Type=Application
+GenericName=Wii/GameCube Emulator
+Comment=Ishiiruka fork for SSBM
+Categories=Emulator;Game;
+Icon=$EXEPATH/Dolphin.png
+Version=$FMVERSION
+Name=$FMNAME
+Exec=$EXEPATH/dolphin-emu" | tee ~/.local/share/applications/faster-melee-$FMVERSION.desktop > /dev/null
+fi
+>>>>>>> af5c1f1218368869d8d530ce98dbd2ebed011efe
 ln -s "$FOLDERNAME/bin/dolphin-emu" ../launch-fm
 echo 'Done! Run ./launch-fm to run the latest installed version!'
 echo 'Make sure to unplug and replug your adapter before opening Dolphin if rules were installed!'
