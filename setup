@@ -21,8 +21,6 @@ COMMITHASH="" # full commit hash
 GITCLONELINK="" # Version of Ishiiruka
 CONFIGLINK="" # Packed configs, can be found under config/ or config/legacy/
 
-PWD="$(pwd)"
-
 
 echo "
 Attempting to delete incomplete installations of FM..."
@@ -161,7 +159,7 @@ rm -f ../launch-fm
 echo "Creating shortcuts..."
 if [ "$SHORTCUTBOOL" -eq 1 ]; then
 	rm -f ~/.local/share/applications/faster-melee-$FMVERSION.desktop # remove old shortcut
-	EXEPATH="$PWD/bin/dolphin-emu"
+	EXEPATH="$(pwd)/bin/dolphin-emu"
 	FMNAME="Faster Melee $FMVERSION"
 	echo "[Desktop Entry]
 	Type=Application
