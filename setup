@@ -130,7 +130,6 @@ echo "Downloading config files..."
 wget $CONFIGLINK
 echo "Extracting..."
 tar -xzf "$FMVERSION-fmconfig.tar.gz" && rm "$FMVERSION-fmconfig.tar.gz"	
-exit
 echo "Downloading tarball..."
 wget "$GITCLONELINK/archive/$COMMITHASH.tar.gz"
 echo "Extracting..."
