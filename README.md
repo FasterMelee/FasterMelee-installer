@@ -36,6 +36,14 @@ DEBIAN JESSIE users note: `libavformat-dev` must be installed from jessie-backpo
 * libbluetooth-dev
 * libxrandr-dev
 
+Solus (possible list, untested):
+
+
+`sudo eopkg it -c system.devel`
+
+`sudo eopkg it libgtk-2-devel libgtk-3-devel wxwidgets-devel libsm-devel gtest-devel llvm-devel lzo-devel mbedtls-devel miniupnpc-devel libxrandr-devel libxi-devel alsa-lib-devel bluez-devel mesalib-devel curl-devel enet-devel libevdev-devel pulseaudio-devel libusb-devel openal-soft-devel portaudio-devel sdl2-devel sfml-devel soundtouch-devel git cmake pkg-config gcc readline-devel libxext-devel libao-devel`
+
+
 ## To use:
 
 ```sh
