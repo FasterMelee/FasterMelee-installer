@@ -160,15 +160,15 @@ cd Ishiiruka
 
 # --- Temporary patch for updated glibc
 echo "Patching xlocale.h requirement..."
-sed -i "s_wxUSE_XLOCALE 0_wxUSE_XLOCALE 1_g" Externals/wxWidgets3/wx/wxcocoa.h
-sed -i "s_wxUSE_XLOCALE 0_wxUSE_XLOCALE 1_g" Externals/wxWidgets3/wx/wxgtk.h
+sed -i "s|#define wxUSE_XLOCALE 1|#define wxUSE_XLOCALE 0|g" Externals/wxWidgets3/wx/wxcocoa.h
+sed -i "s|#define wxUSE_XLOCALE 1|#define wxUSE_XLOCALE 0|g" Externals/wxWidgets3/wx/wxgtk.h
 # ---
 
 # --- Patch tarball to display correct hash to other netplay clients
 echo "Patching tarball..."
-sed -i "s_\${GIT_EXECUTABLE} rev-parse HEAD_echo $COMMITHASH_g" CMakeLists.txt  # --set scm_rev_str everywhere to actual commit hash when downloaded
-sed -i "s_\${GIT_EXECUTABLE} describe --always --long --dirty_echo $(echo "$COMMITHASH" | cut -c1-9 )_g" CMakeLists.txt # ensures compatibility w/ netplay
-sed -i "s_\${GIT_EXECUTABLE} rev-parse --abbrev-ref HEAD_echo HEAD_g" CMakeLists.txt
+sed -i "s|\${GIT_EXECUTABLE} rev-parse HEAD|echo $COMMITHASH|g" CMakeLists.txt  # --set scm_rev_str everywhere to actual commit hash when downloaded
+sed -i "s|\${GIT_EXECUTABLE} describe --always --long --dirty|echo $(echo "$COMMITHASH" | cut -c1-9 )|g" CMakeLists.txt # ensures compatibility w/ netplay
+sed -i "s|\${GIT_EXECUTABLE} rev-parse --abbrev-ref HEAD|echo HEAD|g" CMakeLists.txt
 # ---
 
 # --- move necessary config files into the build folder
