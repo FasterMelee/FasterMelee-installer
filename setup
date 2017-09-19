@@ -130,7 +130,7 @@ else
 fi
 # ---
 
-#
+# --- prompt for -j flag (# of cores utilized)
 echo ""
 echo "CPU Threads detected: $CPUS"
 echo "How many threads would you like to use to compile? (passed to make as -j flag, default: $(( (CPUS + 1) / 2 )), range: 1 - $(( CPUS + 1 )))"
@@ -138,10 +138,12 @@ read -r RESP
 if [ "$RESP" -ge 1 ] 2> /dev/null && [ "$RESP" -le $((CPUS + 1)) ] 2> /dev/null; then
 	CPUS=$RESP 
 else
-	CPUS=$((CPUS + 1))
+	CPUS=$(( (CPUS + 1) / 2))
 fi
 echo "Using $CPUS thread(s)!"
+# ---
 
+# --- enter folder, download and extract needed files
 echo ""
 mkdir "$FOLDERNAME" && cd "$FOLDERNAME"
 echo "Downloading config files..."
@@ -154,19 +156,36 @@ echo "Extracting..."
 tar -xzf "$COMMITHASH.tar.gz" && rm "$COMMITHASH.tar.gz"
 mv "Ishiiruka-$COMMITHASH" Ishiiruka
 cd Ishiiruka
+# ---
+
+# --- Temporary patch for updated glibc
+echo "Patching xlocale.h requirement..."
+sed -i "s_wxUSE_XLOCALE 0_wxUSE_XLOCALE 1_g" Externals/wxWidgets3/wx/wxcocoa.h
+sed -i "s_wxUSE_XLOCALE 0_wxUSE_XLOCALE 1_g" Externals/wxWidgets3/wx/wxgtk.h
+# ---
+
+# --- Patch tarball to display correct hash to other netplay clients
 echo "Patching tarball..."
-sed -i "s#\${GIT_EXECUTABLE} rev-parse HEAD#echo $COMMITHASH#g" CMakeLists.txt  # --set scm_rev_str everywhere to actual commit hash when downloaded
-sed -i "s#\${GIT_EXECUTABLE} describe --always --long --dirty#echo $(echo "$COMMITHASH" | cut -c1-9 )#g" CMakeLists.txt # ensures compatibility w/ netplay
-sed -i "s#\${GIT_EXECUTABLE} rev-parse --abbrev-ref HEAD#echo HEAD#g" CMakeLists.txt
+sed -i "s_\${GIT_EXECUTABLE} rev-parse HEAD_echo $COMMITHASH_g" CMakeLists.txt  # --set scm_rev_str everywhere to actual commit hash when downloaded
+sed -i "s_\${GIT_EXECUTABLE} describe --always --long --dirty_echo $(echo "$COMMITHASH" | cut -c1-9 )_g" CMakeLists.txt # ensures compatibility w/ netplay
+sed -i "s_\${GIT_EXECUTABLE} rev-parse --abbrev-ref HEAD_echo HEAD_g" CMakeLists.txt
+# ---
+
+# --- move necessary config files into the build folder
 echo "Adding FM config files..."
 mkdir build && cd build
 mv ../../Binaries .
 mv ../Data/dolphin-emu.png Binaries/
+# ---
+
+# --- cmake and compile
 echo "cmaking..."
 cmake .. -DLINUX_LOCAL_DEV=true >>"$LOG" 2>&1
 echo "Compiling..."
 make -j $CPUS 2>>"$LOG" # gets rid of errors as to not cause confusion
+# ---
 
+# --- Delete created files and old symlinks, isolate Binaries to their own folder
 echo "Cleaning up..."
 rm "$LOG"
 cd ../..
@@ -174,7 +193,9 @@ mv Ishiiruka/build/Binaries/ bin/
 rm -rf Ishiiruka # -f required to remove git history
 rm -f ../launch-faster-melee # -f required if shortcuts do not exist
 rm -f ../launch-fm
+# ---
 
+# --- create symlink to newly compiled dolphin-emu. if queued, create shortcut.
 echo "Creating shortcuts..."
 if [ "$SHORTCUTBOOL" -eq 1 ]; then
 	rm -f ~/.local/share/applications/faster-melee-$FMVERSION.desktop # remove old shortcut
@@ -194,6 +215,7 @@ Exec=$EXEPATH/dolphin-emu" | tee ~/.local/share/applications/faster-melee-$FMVER
 	chmod +x ~/Desktop/faster-melee-$FMVERSION.desktop
 fi
 ln -s "$FOLDERNAME/bin/dolphin-emu" ../launch-fm
+# ---
 
 echo ""
 echo "*******************************************************************************************"
