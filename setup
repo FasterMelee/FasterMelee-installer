@@ -1,7 +1,11 @@
 #!/bin/sh
 
+# --- Stops the script if errors are encountered. ---
 set -e
+echo "tail -f $LOG to follow along with the log for troubleshooting!"
+# ---
 
+# --- Attempts to determine the number of cores in the CPU. ---
 # Source: https://gist.github.com/jj1bdx/5746298
 # Linux and similar...
 CPUS=$(getconf _NPROCESSORS_ONLN 2>/dev/null)
@@ -11,17 +15,17 @@ CPUS=$(getconf _NPROCESSORS_ONLN 2>/dev/null)
 [ -z "$CPUS" ] && CPUS=$(ksh93 -c 'getconf NPROCESSORS_ONLN')
 # Give up...
 [ -z "$CPUS" ] && CPUS=1
+# ---
 
-echo "tail -f $LOG to follow along with the log for troubleshooting!"
-# all of the 2> /dev/nulls redirect useless errors (e.g. entering a newline) to devnull
 
-# define custom config links here!
+# --- define custom config links here!
 FMVERSION="" # name of FM version, used in folder name
 COMMITHASH="" # full commit hash 
 GITCLONELINK="" # Version of Ishiiruka
 CONFIGLINK="" # Packed configs, can be found under config/ or config/legacy/
+# ---
 
-
+# --- delete all "FasterMelee" folders filled with incomplete installations
 echo "
 Attempting to delete incomplete installations of FM..."
 for f in FasterMelee*; do
@@ -30,7 +34,9 @@ for f in FasterMelee*; do
 		rm -rf "$f" # is incomplete if bin/ doesn't exist
 	fi
 done
+# ---
 
+# --- ask if you want to delete all remaining FM* folders
 echo "
 Would you like to overwrite ALL of your previous installations? (y/N)"
 read -r RESP
@@ -44,7 +50,9 @@ if [ "$RESP" = "y" ] || [ "$RESP" = "Y" ]; then
 else
 	echo "No changes made!"
 fi
+# ---
 
+# --- if custom links aren't defined, prompt to choose a version
 if [ -z "$FMVERSION" ] || [ -z "$COMMITHASH" ] || [ -z "$GITCLONELINK" ] || [ -z "$CONFIGLINK" ]; then #ORs used to ensure everything filled out
 	echo ""
 	echo "Which version of Faster Melee would you like to install? (default: 1)"
@@ -66,7 +74,9 @@ else
 	echo "
 	Attempting to install version $FMVERSION!"
 fi
+# ---
 
+# --- check for previously installed version, ask if overwrite is wanted
 FOLDERNAME="FasterMelee-${FMVERSION}"
 if [ -d "$FOLDERNAME" ]; then
 	echo "
@@ -87,8 +97,13 @@ if [ -d "$FOLDERNAME" ]; then
 		exit
 	fi
 fi
-LOG="$(pwd)/$FOLDERNAME/log.txt"
+# ---
 
+# --- location of log!
+LOG="$(pwd)/$FOLDERNAME/log.txt"
+# ---
+
+# --- prompt to install adapter support
 echo "
 Would you like to install rules for your Wii U adapter? (y/N)"
 read -r RESP
@@ -100,7 +115,9 @@ if [ "$RESP" = "y" ] || [ "$RESP" = "Y" ]; then
 else
 	echo "No changes made!"
 fi
+# ---
 
+# --- prompt to queue shortcut creation for later
 echo "
 Would you like to make a desktop shortcut? (Y/n)"
 read -r RESP
@@ -111,19 +128,22 @@ else
 	SHORTCUTBOOL=0
 	echo "No changes made!"
 fi
+# ---
 
-
+# --- prompt for -j flag (# of cores utilized)
 echo ""
 echo "CPU Threads detected: $CPUS"
-echo "How many threads would you like to use to compile? (passed to make as -j flag, default: $((CPUS + 1)), range: 1-$((CPUS + 1)))"
+echo "How many threads would you like to use to compile? (passed to make as -j flag, default: $(( (CPUS + 1) / 2 )), range: 1 - $(( CPUS + 1 )))"
 read -r RESP
 if [ "$RESP" -ge 1 ] 2> /dev/null && [ "$RESP" -le $((CPUS + 1)) ] 2> /dev/null; then
 	CPUS=$RESP 
 else
-	CPUS=$((CPUS + 1))
+	CPUS=$(( (CPUS + 1) / 2))
 fi
 echo "Using $CPUS thread(s)!"
+# ---
 
+# --- enter folder, download and extract needed files
 echo ""
 mkdir "$FOLDERNAME" && cd "$FOLDERNAME"
 echo "Downloading config files..."
@@ -136,19 +156,36 @@ echo "Extracting..."
 tar -xzf "$COMMITHASH.tar.gz" && rm "$COMMITHASH.tar.gz"
 mv "Ishiiruka-$COMMITHASH" Ishiiruka
 cd Ishiiruka
+# ---
+
+# --- Temporary patch for updated glibc
+echo "Patching xlocale.h requirement..."
+sed -i "s|#define wxUSE_XLOCALE 1|#define wxUSE_XLOCALE 0|g" Externals/wxWidgets3/wx/wxcocoa.h
+sed -i "s|#define wxUSE_XLOCALE 1|#define wxUSE_XLOCALE 0|g" Externals/wxWidgets3/wx/wxgtk.h
+# ---
+
+# --- Patch tarball to display correct hash to other netplay clients
 echo "Patching tarball..."
-sed -i "s#\${GIT_EXECUTABLE} rev-parse HEAD#echo $COMMITHASH#g" CMakeLists.txt  # --set scm_rev_str everywhere to actual commit hash when downloaded
-sed -i "s#\${GIT_EXECUTABLE} describe --always --long --dirty#echo $(echo "$COMMITHASH" | cut -c1-9 )#g" CMakeLists.txt # ensures compatibility w/ netplay
-sed -i "s#\${GIT_EXECUTABLE} rev-parse --abbrev-ref HEAD#echo HEAD#g" CMakeLists.txt
+sed -i "s|\${GIT_EXECUTABLE} rev-parse HEAD|echo $COMMITHASH|g" CMakeLists.txt  # --set scm_rev_str everywhere to actual commit hash when downloaded
+sed -i "s|\${GIT_EXECUTABLE} describe --always --long --dirty|echo $(echo "$COMMITHASH" | cut -c1-9 )|g" CMakeLists.txt # ensures compatibility w/ netplay
+sed -i "s|\${GIT_EXECUTABLE} rev-parse --abbrev-ref HEAD|echo HEAD|g" CMakeLists.txt
+# ---
+
+# --- move necessary config files into the build folder
 echo "Adding FM config files..."
 mkdir build && cd build
 mv ../../Binaries .
 mv ../Data/dolphin-emu.png Binaries/
+# ---
+
+# --- cmake and compile
 echo "cmaking..."
 cmake .. -DLINUX_LOCAL_DEV=true >>"$LOG" 2>&1
 echo "Compiling..."
 make -j $CPUS 2>>"$LOG" # gets rid of errors as to not cause confusion
+# ---
 
+# --- Delete created files and old symlinks, isolate Binaries to their own folder
 echo "Cleaning up..."
 rm "$LOG"
 cd ../..
@@ -156,7 +193,9 @@ mv Ishiiruka/build/Binaries/ bin/
 rm -rf Ishiiruka # -f required to remove git history
 rm -f ../launch-faster-melee # -f required if shortcuts do not exist
 rm -f ../launch-fm
+# ---
 
+# --- create symlink to newly compiled dolphin-emu. if queued, create shortcut.
 echo "Creating shortcuts..."
 if [ "$SHORTCUTBOOL" -eq 1 ]; then
 	rm -f ~/.local/share/applications/faster-melee-$FMVERSION.desktop # remove old shortcut
@@ -176,6 +215,7 @@ Exec=$EXEPATH/dolphin-emu" | tee ~/.local/share/applications/faster-melee-$FMVER
 	chmod +x ~/Desktop/faster-melee-$FMVERSION.desktop
 fi
 ln -s "$FOLDERNAME/bin/dolphin-emu" ../launch-fm
+# ---
 
 echo ""
 echo "*******************************************************************************************"
