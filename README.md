@@ -9,6 +9,8 @@ Currently tested on Arch, Ubuntu 17.04, centOS 7.3, and others, but should work 
 ## Dependencies needed (install these first!)
 For most users, see [this page](https://wiki.dolphin-emu.org/index.php?title=Building_Dolphin_on_Linux) for an easy to install list of dependencies; otherwise, see below.
 
+Fedora users: Install dependencies below!
+
 DEBIAN JESSIE users note: `libavformat-dev` must be installed from jessie-backports to avoid errors.
 
 **REQUIRED: Note that your distro may have different names for these packages!**
@@ -36,8 +38,11 @@ DEBIAN JESSIE users note: `libavformat-dev` must be installed from jessie-backpo
 * libbluetooth-dev
 * libxrandr-dev
 
-Solus (possible list, untested):
+Fedora:
 
+`dnf install cmake git gcc-c++ libXext-devel libgudev gtk+-devel wxGTK-devel systemd-devel openal-soft-devel libevdev-devel libao-devel SOIL-devel libXrandr-devel pulseaudio-libs-devel bluez-libs-devel libusb-devel`
+
+Solus (possible list, untested):
 
 `sudo eopkg it -c system.devel`
 
