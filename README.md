@@ -26,6 +26,7 @@ DEBIAN JESSIE users note: `libavformat-dev` must be installed from jessie-backpo
 * libgl1-mesa-dev
 * libevdev-dev
 * libudev-dev
+* libusb-dev
 
 **OPTIONAL:**
 * libasound-dev
