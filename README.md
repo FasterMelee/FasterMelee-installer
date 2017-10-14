@@ -53,7 +53,7 @@ Solus (possible list, untested):
 ## To use:
 
 ```sh
-sh -c "$(wget -qO - https://github.com/Ptomerty/FasterMelee-installer/raw/master/setup)"
+sh -c "$(wget -qO - https://github.com/FasterMelee/FasterMelee-installer/raw/master/setup)"
 ```
 
 If a different version is needed (e.g. not Discord/SL default), edit the script and replace the desired variables.
