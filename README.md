@@ -4,7 +4,7 @@ A script for compiling Faster Melee (currently supported: **5.7** and **5.0.3**)
 
 Currently tested on Arch, Ubuntu 17.04, centOS 7.3, and others, but should work across *all* distributions given the right dependencies. Older versions can be found under `config/legacy/`.
 
-[Join the official Faster Melee Discord Channel for support!](https://discord.gg/h6C4tCj)
+[Join the official Faster Melee Discord Channel for support!](https://discord.gg/fastermelee)
 
 ## Dependencies needed (install these first!)
 For most users, see [this page](https://wiki.dolphin-emu.org/index.php?title=Building_Dolphin_on_Linux) for an easy to install list of dependencies; otherwise, see below.
