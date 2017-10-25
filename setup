@@ -56,6 +56,7 @@ fi
 if [ -z "$FMVERSION" ] || [ -z "$COMMITHASH" ] || [ -z "$GITCLONELINK" ] || [ -z "$CONFIGLINK" ]; then #ORs used to ensure everything filled out
 	echo ""
 	echo "Which version of Faster Melee would you like to install? (default: 1)"
+	wget "https://api.github.com/repos/FasterMelee/Ishiiruka/releases/latest" | python -c 'import json,sys;obj=json.load(sys.stdin);print obj["tag_name"];'
 	echo "1.) 5.7 (Discord default)"
 	echo "2.) 5.0.3 (SmashLadder default)"
 	read -r RESP
