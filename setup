@@ -2,7 +2,6 @@
 
 # --- Stops the script if errors are encountered. ---
 set -e
-echo "tail -f $LOG to follow along with the log for troubleshooting!"
 # ---
 
 # --- Attempts to determine the number of cores in the CPU. ---
@@ -55,19 +54,9 @@ fi
 # --- if custom links aren't defined, prompt to choose a version
 if [ -z "$FMVERSION" ] || [ -z "$COMMITHASH" ] || [ -z "$GITCLONELINK" ] || [ -z "$CONFIGLINK" ]; then #ORs used to ensure everything filled out
 	echo ""
-	echo "Which version of Faster Melee would you like to install? (default: 1)"
-	echo "1.) 5.7 (Discord default)"
-	echo "2.) 5.0.3 (SmashLadder default)"
-	read -r RESP
-	if [ "$RESP" -eq 2 ] 2> /dev/null; then
-	 	FMVERSION="5.0.3"
-		COMMITHASH="d462ca38724db65d7f92f3edbd16b6657291e420"
-		GITCLONELINK="https://github.com/Tinob/Ishiiruka"
-	else
-		FMVERSION="5.7"
-		COMMITHASH="ce994a2cea882bf4d145df87554e43314331cf9a"
-		GITCLONELINK="https://github.com/FasterMelee/Ishiiruka"
-	fi
+	FMVERSION="5.8"
+	COMMITHASH="715edcda01990b3a8511359dba5525046be328f2"
+	GITCLONELINK="https://github.com/FasterMelee/Ishiiruka"
 	echo "Installing version $FMVERSION!"
 	CONFIGLINK="https://github.com/FasterMelee/FasterMelee-installer/raw/master/config/$FMVERSION-fmconfig.tar.gz"
 else
@@ -99,9 +88,6 @@ if [ -d "$FOLDERNAME" ]; then
 fi
 # ---
 
-# --- location of log!
-LOG="$(pwd)/$FOLDERNAME/log.txt"
-# ---
 
 # --- prompt to install adapter support
 echo "
@@ -138,7 +124,7 @@ read -r RESP
 if [ "$RESP" -ge 1 ] 2> /dev/null && [ "$RESP" -le $((CPUS + 1)) ] 2> /dev/null; then
 	CPUS=$RESP 
 else
-	CPUS=$(( (CPUS + 1) / 2))
+	CPUS=1
 fi
 echo "Using $CPUS thread(s)!"
 # ---
@@ -167,7 +153,7 @@ sed -i "s|#define wxUSE_XLOCALE 1|#define wxUSE_XLOCALE 0|g" Externals/wxWidgets
 # --- Patch tarball to display correct hash to other netplay clients
 echo "Patching tarball..."
 sed -i "s|\${GIT_EXECUTABLE} rev-parse HEAD|echo $COMMITHASH|g" CMakeLists.txt  # --set scm_rev_str everywhere to actual commit hash when downloaded
-sed -i "s|\${GIT_EXECUTABLE} describe --always --long --dirty|echo $(echo "$COMMITHASH" | cut -c1-9 )|g" CMakeLists.txt # ensures compatibility w/ netplay
+sed -i "s|\${GIT_EXECUTABLE} describe --always --long --dirty|echo FM v5.8b|g" CMakeLists.txt # ensures compatibility w/ netplay
 sed -i "s|\${GIT_EXECUTABLE} rev-parse --abbrev-ref HEAD|echo HEAD|g" CMakeLists.txt
 # ---
 
@@ -180,14 +166,13 @@ mv ../Data/dolphin-emu.png Binaries/
 
 # --- cmake and compile
 echo "cmaking..."
-cmake .. -DLINUX_LOCAL_DEV=true >>"$LOG" 2>&1
+cmake .. -DLINUX_LOCAL_DEV=true
 echo "Compiling..."
-make -j $CPUS 2>>"$LOG" # gets rid of errors as to not cause confusion
+make -j $CPUS
 # ---
 
 # --- Delete created files and old symlinks, isolate Binaries to their own folder
 echo "Cleaning up..."
-rm "$LOG"
 cd ../..
 mv Ishiiruka/build/Binaries/ bin/
 rm -rf Ishiiruka # -f required to remove git history
