@@ -2,6 +2,8 @@
 
 Here lie old, unsupported versions of Faster Melee.
 
+Notes:
+
 * 4.4: Run the included `setup`, includes RasterFont and CMakeLists patches to compile successfully.
 
 * 5.5: 
@@ -32,3 +34,4 @@ GITCLONELINK="https://github.com/HannesMann/Ishiiruka" # Version of Ishiiruka
 CONFIGLINK="https://github.com/FasterMelee/FasterMelee-installer/raw/master/config/legacy/5.66-fmconfig.tar.gz" # Packed configs, can be found under config/ or config/legacy/
 ```
 
+5.8's configuration is fundamentally the exact same as 5.8.4.
