@@ -153,7 +153,7 @@ sed -i "s|#define wxUSE_XLOCALE 1|#define wxUSE_XLOCALE 0|g" Externals/wxWidgets
 # --- Patch tarball to display correct hash to other netplay clients
 echo "Patching tarball..."
 sed -i "s|\${GIT_EXECUTABLE} rev-parse HEAD|echo $COMMITHASH|g" CMakeLists.txt  # --set scm_rev_str everywhere to actual commit hash when downloaded
-sed -i "s|\${GIT_EXECUTABLE} describe --always --long --dirty|echo FM v5.8b|g" CMakeLists.txt # ensures compatibility w/ netplay
+sed -i "s|\${GIT_EXECUTABLE} describe --always --long --dirty|echo FM v5.8.4 BETA|g" CMakeLists.txt # ensures compatibility w/ netplay
 sed -i "s|\${GIT_EXECUTABLE} rev-parse --abbrev-ref HEAD|echo HEAD|g" CMakeLists.txt
 # ---
 
