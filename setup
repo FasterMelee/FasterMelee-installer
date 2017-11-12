@@ -54,8 +54,8 @@ fi
 # --- if custom links aren't defined, prompt to choose a version
 if [ -z "$FMVERSION" ] || [ -z "$COMMITHASH" ] || [ -z "$GITCLONELINK" ] || [ -z "$CONFIGLINK" ]; then #ORs used to ensure everything filled out
 	echo ""
-	FMVERSION="5.8"
-	COMMITHASH="c713fe62f7efab08f70deeb58d60a16b2f1acf5e"
+	FMVERSION="5.8.4"
+	COMMITHASH="dd2cb148547b08e16a4b76852ea5905c89d3d3a1"
 	GITCLONELINK="https://github.com/FasterMelee/Ishiiruka"
 	echo "Installing version $FMVERSION!"
 	CONFIGLINK="https://github.com/FasterMelee/FasterMelee-installer/raw/master/config/$FMVERSION-fmconfig.tar.gz"
