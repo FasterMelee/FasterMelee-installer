@@ -119,7 +119,7 @@ fi
 # --- prompt for -j flag (# of cores utilized)
 echo ""
 echo "CPU Threads detected: $CPUS"
-echo "How many threads would you like to use to compile? (passed to make as -j flag, default: $(( (CPUS + 1) / 2 )), range: 1 - $(( CPUS + 1 )))"
+echo "How many threads would you like to use to compile? (passed to make as -j flag, default: 1, range: 1 - $(( CPUS + 1 )))"
 read -r RESP
 if [ "$RESP" -ge 1 ] 2> /dev/null && [ "$RESP" -le $((CPUS + 1)) ] 2> /dev/null; then
 	CPUS=$RESP 
