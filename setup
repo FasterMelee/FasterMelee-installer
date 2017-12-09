@@ -91,7 +91,7 @@ fi
 
 # --- prompt to install adapter support
 echo "
-Would you like to install rules for your Wii U adapter? (y/N)"
+Would you like to install udev rules for your Wii U adapter? (y/N) (Necessary for reduced-lag direct adapter connection)"
 read -r RESP
 if [ "$RESP" = "y" ] || [ "$RESP" = "Y" ]; then
 	sudo rm -f /etc/udev/rules.d/51-gcadapter.rules # remove even if doesn't exist
