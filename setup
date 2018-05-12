@@ -55,7 +55,7 @@ fi
 if [ -z "$FMVERSION" ] || [ -z "$COMMITHASH" ] || [ -z "$GITCLONELINK" ] || [ -z "$CONFIGLINK" ]; then #ORs used to ensure everything filled out
 	echo ""
 	FMVERSION="5.8.7"
-	COMMITHASH="6ababb9222fb8bb9723ae137e1263a27196fcd47"
+	COMMITHASH="819271d0ce69a811cbbe211437da6e2b0ae2b771"
 	GITCLONELINK="https://github.com/FasterMelee/Ishiiruka"
 	echo "Installing version $FMVERSION!"
 	CONFIGLINK="https://github.com/FasterMelee/FasterMelee-installer/raw/master/config/$FMVERSION-fmconfig.tar.gz"
@@ -157,6 +157,12 @@ sed -i "s|\${GIT_EXECUTABLE} describe --always --long --dirty|echo FM v$FMVERSIO
 sed -i "s|\${GIT_EXECUTABLE} rev-parse --abbrev-ref HEAD|echo HEAD|g" CMakeLists.txt
 # ---
 
+# --- Dirty patch for https://bugs.dolphin-emu.org/issues/11047
+echo "Patching CMakeLists.txt..."
+sed -i "s|#include <cstring>|#include <cstring>\n#define _XSAVEINTRIN_H_INCLUDED|g" Source/Core/Common/x64CPUDetect.cpp # issue 1
+# sed -i "s|check_and_add_flag(CXX17 -std=c++17)|#check_and_add_flag(CXX17 -std=c++17)" # issue 2 not present
+# ---
+
 # --- move necessary config files into the build folder
 echo "Adding FM config files..."
 mkdir build && cd build
@@ -164,11 +170,13 @@ mv ../../Binaries .
 mv ../Data/dolphin-emu.png Binaries/
 # ---
 
+exit # debug
+
 # --- cmake and compile
 echo "cmaking..."
 cmake .. -DLINUX_LOCAL_DEV=true
 echo "Compiling..."
-make -j $CPUS
+make -j $CPUS -s
 # ---
 
 # --- Delete created files and old symlinks, isolate Binaries to their own folder
