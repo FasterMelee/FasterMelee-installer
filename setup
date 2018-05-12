@@ -170,8 +170,6 @@ mv ../../Binaries .
 mv ../Data/dolphin-emu.png Binaries/
 # ---
 
-exit # debug
-
 # --- cmake and compile
 echo "cmaking..."
 cmake .. -DLINUX_LOCAL_DEV=true
