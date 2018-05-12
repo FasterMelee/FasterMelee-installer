@@ -16,6 +16,12 @@ CPUS=$(getconf _NPROCESSORS_ONLN 2>/dev/null)
 [ -z "$CPUS" ] && CPUS=1
 # ---
 
+# --- Checks if we can use wget small progress bar
+# Source: https://stackoverflow.com/a/32491843
+# set progress option accordingly
+wget --help | grep -q '\--show-progress' && \
+  _PROGRESS_OPT="-q --show-progress" || _PROGRESS_OPT=""
+
 
 # --- define custom config links here!
 FMVERSION="" # name of FM version, used in folder name
@@ -55,7 +61,7 @@ fi
 if [ -z "$FMVERSION" ] || [ -z "$COMMITHASH" ] || [ -z "$GITCLONELINK" ] || [ -z "$CONFIGLINK" ]; then #ORs used to ensure everything filled out
 	echo ""
 	FMVERSION="5.8.7"
-	COMMITHASH="dcfa72747d543655aa9eaf6826718d4988a065d9"
+	COMMITHASH="6ababb9222fb8bb9723ae137e1263a27196fcd47"
 	GITCLONELINK="https://github.com/FasterMelee/Ishiiruka"
 	echo "Installing version $FMVERSION!"
 	CONFIGLINK="https://github.com/FasterMelee/FasterMelee-installer/raw/master/config/$FMVERSION-fmconfig.tar.gz"
@@ -133,13 +139,13 @@ echo "Using $CPUS thread(s)!"
 echo ""
 mkdir "$FOLDERNAME" && cd "$FOLDERNAME"
 echo "Downloading config files..."
-wget $CONFIGLINK
-echo "Extracting..."
-tar -xzf "$FMVERSION-fmconfig.tar.gz" && rm "$FMVERSION-fmconfig.tar.gz"	
+wget $_PROGRESS_OPT $CONFIGLINK
+echo "Extracting config files..."
+tar -xzf "$FMVERSION-fmconfig.tar.gz" --totals && rm "$FMVERSION-fmconfig.tar.gz"	
 echo "Downloading tarball..."
-wget "$GITCLONELINK/archive/$COMMITHASH.tar.gz"
-echo "Extracting..."
-tar -xzf "$COMMITHASH.tar.gz" && rm "$COMMITHASH.tar.gz"
+wget $_PROGRESS_OPT "$GITCLONELINK/archive/$COMMITHASH.tar.gz"
+echo "Extracting tarball..."
+tar -xzf "$COMMITHASH.tar.gz" --totals && rm "$COMMITHASH.tar.gz"
 mv "Ishiiruka-$COMMITHASH" Ishiiruka
 cd Ishiiruka
 # ---
@@ -150,17 +156,23 @@ sed -i "s|#define wxUSE_XLOCALE 1|#define wxUSE_XLOCALE 0|g" Externals/wxWidgets
 sed -i "s|#define wxUSE_XLOCALE 1|#define wxUSE_XLOCALE 0|g" Externals/wxWidgets3/wx/wxgtk.h
 # ---
 
-# --- Patch tarball to display correct hash to other netplay clients
-echo "Patching tarball..."
-sed -i "s|\${GIT_EXECUTABLE} rev-parse HEAD|echo 6ababb9222fb8bb9723ae137e1263a27196fcd47|g" CMakeLists.txt  # --set scm_rev_str everywhere to actual commit hash when downloaded
-sed -i "s|\${GIT_EXECUTABLE} describe --always --long --dirty|echo FM v$FMVERSION BETA|g" CMakeLists.txt # ensures compatibility w/ netplay
-sed -i "s|\${GIT_EXECUTABLE} rev-parse --abbrev-ref HEAD|echo HEAD|g" CMakeLists.txt
-# ---
-
 # --- Dirty patch for https://bugs.dolphin-emu.org/issues/11047
-echo "Patching CMakeLists.txt..."
+echo "Patching xgetbv function..."
 sed -i "s|#include <cstring>|#include <cstring>\n#define _XSAVEINTRIN_H_INCLUDED|g" Source/Core/Common/x64CPUDetect.cpp # issue 1
 # sed -i "s|check_and_add_flag(CXX17 -std=c++17)|#check_and_add_flag(CXX17 -std=c++17)" # issue 2 not present
+# ---
+
+# --- Patch for https://github.com/dolphin-emu/dolphin/pull/6603/files
+echo "Patching AVIDump.cpp..."
+sed -i "s|CODEC_FLAG_GLOBAL_HEADER|AV_CODEC_FLAG_GLOBAL_HEADER|g" Source/Core/VideoCommon/AVIDump.cpp # replace existing objects first
+sed -i "s|#if LIBAVCODEC_VERSION_INT < AV_VERSION_INT(55, 28, 1)|#if LIBAVCODEC_VERSION_INT < AV_VERSION_INT(55, 28, 1)\n#define AV_CODEC_FLAG_GLOBAL_HEADER CODEC_FLAG_GLOBAL_HEADER|g" Source/Core/VideoCommon/AVIDump.cpp # add in define
+# ---
+
+# --- Patch tarball to display correct hash to other netplay clients
+echo "Patching tarball..."
+sed -i "s|\${GIT_EXECUTABLE} rev-parse HEAD|echo $COMMITHASH|g" CMakeLists.txt  # --set scm_rev_str everywhere to actual commit hash when downloaded
+sed -i "s|\${GIT_EXECUTABLE} describe --always --long --dirty|echo FM v$FMVERSION BETA|g" CMakeLists.txt # ensures compatibility w/ netplay
+sed -i "s|\${GIT_EXECUTABLE} rev-parse --abbrev-ref HEAD|echo HEAD|g" CMakeLists.txt
 # ---
 
 # --- move necessary config files into the build folder
