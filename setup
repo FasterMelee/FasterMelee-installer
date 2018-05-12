@@ -55,7 +55,7 @@ fi
 if [ -z "$FMVERSION" ] || [ -z "$COMMITHASH" ] || [ -z "$GITCLONELINK" ] || [ -z "$CONFIGLINK" ]; then #ORs used to ensure everything filled out
 	echo ""
 	FMVERSION="5.8.7"
-	COMMITHASH="819271d0ce69a811cbbe211437da6e2b0ae2b771"
+	COMMITHASH="dcfa72747d543655aa9eaf6826718d4988a065d9"
 	GITCLONELINK="https://github.com/FasterMelee/Ishiiruka"
 	echo "Installing version $FMVERSION!"
 	CONFIGLINK="https://github.com/FasterMelee/FasterMelee-installer/raw/master/config/$FMVERSION-fmconfig.tar.gz"
