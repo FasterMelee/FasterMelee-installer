@@ -16,13 +16,6 @@ CPUS=$(getconf _NPROCESSORS_ONLN 2>/dev/null)
 [ -z "$CPUS" ] && CPUS=1
 # ---
 
-# --- Checks if we can use wget small progress bar
-# Source: https://stackoverflow.com/a/32491843
-# set progress option accordingly
-wget --help | grep -q '\--show-progress' && \
-  _PROGRESS_OPT="-q --show-progress" || _PROGRESS_OPT=""
-
-
 # --- define custom config links here!
 FMVERSION="" # name of FM version, used in folder name
 COMMITHASH="" # full commit hash 
@@ -139,11 +132,11 @@ echo "Using $CPUS thread(s)!"
 echo ""
 mkdir "$FOLDERNAME" && cd "$FOLDERNAME"
 echo "Downloading config files..."
-wget $_PROGRESS_OPT $CONFIGLINK
+curl -LO# $CONFIGLINK
 echo "Extracting config files..."
 tar -xzf "$FMVERSION-fmconfig.tar.gz" --totals && rm "$FMVERSION-fmconfig.tar.gz"	
 echo "Downloading tarball..."
-wget $_PROGRESS_OPT "$GITCLONELINK/archive/$COMMITHASH.tar.gz"
+curl -LO# "$GITCLONELINK/archive/$COMMITHASH.tar.gz"
 echo "Extracting tarball..."
 tar -xzf "$COMMITHASH.tar.gz" --totals && rm "$COMMITHASH.tar.gz"
 mv "Ishiiruka-$COMMITHASH" Ishiiruka
