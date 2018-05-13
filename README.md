@@ -1,6 +1,6 @@
 # Faster Melee Installer for Linux
 
-A script for compiling Faster Melee (currently supported: **5.8.7**) on Linux.
+A script for compiling Faster Melee on Linux. Current Version: **5.8.7**
 
 Currently tested on Arch, Ubuntu 17.04, centOS 7.3, and others, but should work across *all* distributions given the right dependencies. Older versions can be found under `config/legacy/`.
 
@@ -53,7 +53,7 @@ Solus (possible list, untested):
 ## To use:
 
 ```sh
-sh -c "$(wget -qO - https://github.com/FasterMelee/FasterMelee-installer/raw/master/setup)"
+sh -c "$(curl -Ls https://github.com/FasterMelee/FasterMelee-installer/raw/master/setup)"
 ```
 
 If a different version is needed (e.g. not Discord/SL default), edit the script and replace the desired variables.
