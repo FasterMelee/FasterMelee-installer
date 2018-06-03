@@ -54,7 +54,7 @@ fi
 if [ -z "$FMVERSION" ] || [ -z "$COMMITHASH" ] || [ -z "$GITCLONELINK" ] || [ -z "$CONFIGLINK" ]; then #ORs used to ensure everything filled out
 	echo ""
 	FMVERSION="5.8.7"
-	COMMITHASH="6ababb9222fb8bb9723ae137e1263a27196fcd47"
+	COMMITHASH="98ebbc166beee649bd23066ce91ba1d88e73861c"
 	GITCLONELINK="https://github.com/FasterMelee/Ishiiruka"
 	echo "Installing version $FMVERSION!"
 	CONFIGLINK="https://github.com/FasterMelee/FasterMelee-installer/raw/master/config/$FMVERSION-fmconfig.tar.gz"
@@ -163,7 +163,7 @@ sed -i "s|#if LIBAVCODEC_VERSION_INT < AV_VERSION_INT(55, 28, 1)|#if LIBAVCODEC_
 
 # --- Patch tarball to display correct hash to other netplay clients
 echo "Patching tarball..."
-sed -i "s|\${GIT_EXECUTABLE} rev-parse HEAD|echo $COMMITHASH|g" CMakeLists.txt  # --set scm_rev_str everywhere to actual commit hash when downloaded
+sed -i "s|\${GIT_EXECUTABLE} rev-parse HEAD|echo 6ababb9222fb8bb9723ae137e1263a27196fcd47|g" CMakeLists.txt  # --set scm_rev_str everywhere to actual commit hash when downloaded
 sed -i "s|\${GIT_EXECUTABLE} describe --always --long --dirty|echo FM v$FMVERSION BETA|g" CMakeLists.txt # ensures compatibility w/ netplay
 sed -i "s|\${GIT_EXECUTABLE} rev-parse --abbrev-ref HEAD|echo HEAD|g" CMakeLists.txt
 # ---
