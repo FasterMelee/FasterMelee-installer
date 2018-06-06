@@ -73,7 +73,7 @@ v1.5: Moved required files to GitHub for easier updates, edited RasterFont.cpp t
 
 v1.4: Added general POSIX support, works on Debian now; changed libcurl to wget Credit: /u/folfess.
 
-v1.3.reg1: Final version, attempting to avoid cloning Ishiiruka causes unfixable errors with netplay.
+v1.3-reg1: Final version, attempting to avoid cloning Ishiiruka causes unfixable errors with netplay.
 
 ### Thanks to:
 
