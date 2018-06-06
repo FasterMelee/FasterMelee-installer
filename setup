@@ -133,7 +133,7 @@ echo ""
 mkdir "$FOLDERNAME" && cd "$FOLDERNAME"
 echo "Downloading config files..."
 curl -LO# $CONFIGLINK
-printf "Extracting config files...\n"
+echo "Extracting config files..."
 tar -xzf "$FMVERSION-fmconfig.tar.gz" --checkpoint-action='exec=printf "%d/410 records extracted.\r" $TAR_CHECKPOINT' --totals
 rm "$FMVERSION-fmconfig.tar.gz"
 echo ""
@@ -155,7 +155,7 @@ sed -i "s|#include <cstring>|#include <cstring>\n#define _XSAVEINTRIN_H_INCLUDED
 
 # --- Patch tarball to display correct hash to other netplay clients
 echo "Patching tarball..."
-sed -i "s|\${GIT_EXECUTABLE} rev-parse HEAD|echo 6ababb9222fb8bb9723ae137e1263a27196fcd47|g" CMakeLists.txt  # --set scm_rev_str everywhere to actual commit hash when downloaded
+sed -i "s|\${GIT_EXECUTABLE} rev-parse HEAD|echo $COMMITHASH|g" CMakeLists.txt  # --set scm_rev_str everywhere to actual commit hash when downloaded
 sed -i "s|\${GIT_EXECUTABLE} describe --always --long --dirty|echo FM v$FMVERSION BETA|g" CMakeLists.txt # ensures compatibility w/ netplay
 sed -i "s|\${GIT_EXECUTABLE} rev-parse --abbrev-ref HEAD|echo HEAD|g" CMakeLists.txt
 # ---
