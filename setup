@@ -57,7 +57,7 @@ if [ -z "$FMVERSION" ] || [ -z "$COMMITHASH" ] || [ -z "$GITCLONELINK" ] || [ -z
 	COMMITHASH="4a36badb6ff3ed533c26b3b201e6d3673a2353a8"
 	GITCLONELINK="https://github.com/FasterMelee/Ishiiruka"
 	echo "Installing version $FMVERSION!"
-	CONFIGLINK="https://github.com/FasterMelee/FasterMelee-installer/raw/5.9b/config/$FMVERSION-fmconfig.tar.gz"
+	CONFIGLINK="https://github.com/FasterMelee/FasterMelee-installer/raw/master/config/$FMVERSION-fmconfig.tar.gz"
 else
 	echo "
 	Attempting to install version $FMVERSION!"
@@ -133,13 +133,16 @@ echo ""
 mkdir "$FOLDERNAME" && cd "$FOLDERNAME"
 echo "Downloading config files..."
 curl -LO# $CONFIGLINK
-printf "Extracting config files...\n["
-tar -xzf "$FMVERSION-fmconfig.tar.gz" --checkpoint=.8 && rm "$FMVERSION-fmconfig.tar.gz"
-printf "]\nDownloading tarball...\n"
+printf "Extracting config files...\n"
+tar -xzf "$FMVERSION-fmconfig.tar.gz" --checkpoint-action='exec=printf "%d/410 records extracted.\r" $TAR_CHECKPOINT' --totals
+rm "$FMVERSION-fmconfig.tar.gz"
+echo ""
+echo "Downloading tarball..."
 curl -LO# "$GITCLONELINK/archive/$COMMITHASH.tar.gz"
-printf "Extracting tarball...\n["
-tar -xzf "$COMMITHASH.tar.gz" --checkpoint=.244 && rm "$COMMITHASH.tar.gz"
-echo "]"
+echo "Extracting tarball..."
+tar -xzf "$COMMITHASH.tar.gz" --checkpoint-action='exec=printf "%d/12130 records extracted.\r" $TAR_CHECKPOINT' --totals
+rm "$COMMITHASH.tar.gz"
+echo "" #spacing
 mv "Ishiiruka-$COMMITHASH" Ishiiruka
 cd Ishiiruka
 # ---
