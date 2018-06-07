@@ -1,17 +1,23 @@
 # Faster Melee Installer for Linux
 
-A script for compiling Faster Melee on Linux. Current Version: **5.8.7**
+A script for compiling Faster Melee on Linux. Current Version: **5.9**
 
-Currently tested on Arch, Ubuntu 17.04, centOS 7.3, and others, but should work across *all* distributions given the right dependencies. Older versions can be found under `config/legacy/`.
+Currently tested on Arch, Ubuntu, centOS 7.3, and others, but should work across *all* distributions given the right dependencies. Older versions can be found under `config/legacy/`.
 
 [Join the official Faster Melee Discord Channel for support!](https://discord.gg/fastermelee)
 
 ## Dependencies needed (install these first!)
 For most users, see [this page](https://wiki.dolphin-emu.org/index.php?title=Building_Dolphin_on_Linux) for an easy to install list of dependencies; otherwise, see below.
 
-Fedora users: Install dependencies below!
+Fedora:
 
-DEBIAN JESSIE users note: `libavformat-dev` must be installed from jessie-backports to avoid errors.
+`dnf install cmake git gcc-c++ libXext-devel libgudev gtk+-devel wxGTK-devel systemd-devel openal-soft-devel libevdev-devel libao-devel SOIL-devel libXrandr-devel pulseaudio-libs-devel bluez-libs-devel libusb-devel`
+
+Solus (possible list, untested):
+
+`sudo eopkg it -c system.devel`
+
+`sudo eopkg it libgtk-2-devel libgtk-3-devel wxwidgets-devel libsm-devel gtest-devel llvm-devel lzo-devel mbedtls-devel miniupnpc-devel libxrandr-devel libxi-devel alsa-lib-devel bluez-devel mesalib-devel curl-devel enet-devel libevdev-devel pulseaudio-devel libusb-devel openal-soft-devel portaudio-devel sdl2-devel SFML-devel soundtouch-devel git cmake pkg-config gcc readline-devel libxext-devel libao-devel`
 
 **REQUIRED: Note that your distro may have different names for these packages!**
 * ~~git~~ git is *NOT* required for this build, but is very helpful to have anyway; consider installing it!
@@ -38,17 +44,6 @@ DEBIAN JESSIE users note: `libavformat-dev` must be installed from jessie-backpo
 * libswscale-dev
 * libbluetooth-dev
 * libxrandr-dev
-
-Fedora:
-
-`dnf install cmake git gcc-c++ libXext-devel libgudev gtk+-devel wxGTK-devel systemd-devel openal-soft-devel libevdev-devel libao-devel SOIL-devel libXrandr-devel pulseaudio-libs-devel bluez-libs-devel libusb-devel`
-
-Solus (possible list, untested):
-
-`sudo eopkg it -c system.devel`
-
-`sudo eopkg it libgtk-2-devel libgtk-3-devel wxwidgets-devel libsm-devel gtest-devel llvm-devel lzo-devel mbedtls-devel miniupnpc-devel libxrandr-devel libxi-devel alsa-lib-devel bluez-devel mesalib-devel curl-devel enet-devel libevdev-devel pulseaudio-devel libusb-devel openal-soft-devel portaudio-devel sdl2-devel SFML-devel soundtouch-devel git cmake pkg-config gcc readline-devel libxext-devel libao-devel`
-
 
 ## To use:
 
@@ -78,10 +73,10 @@ v1.5: Moved required files to GitHub for easier updates, edited RasterFont.cpp t
 
 v1.4: Added general POSIX support, works on Debian now; changed libcurl to wget Credit: /u/folfess.
 
-v1.3~reg1: Final version, attempting to avoid cloning Ishiiruka causes unfixable errors with netplay.
-
+v1.3-reg1: Final version, attempting to avoid cloning Ishiiruka causes unfixable errors with netplay.
 
 ### Thanks to:
+
 /u/ParadigmComplex. Seriously, I could not have finished the original script without this guy.
 
 /u/jojorino and Hannesmann, always testing and helping, as well as the rest of the FM discord!

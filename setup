@@ -53,8 +53,8 @@ fi
 # --- if custom links aren't defined, prompt to choose a version
 if [ -z "$FMVERSION" ] || [ -z "$COMMITHASH" ] || [ -z "$GITCLONELINK" ] || [ -z "$CONFIGLINK" ]; then #ORs used to ensure everything filled out
 	echo ""
-	FMVERSION="5.8.7"
-	COMMITHASH="98ebbc166beee649bd23066ce91ba1d88e73861c"
+	FMVERSION="5.9"
+	COMMITHASH="4a36badb6ff3ed533c26b3b201e6d3673a2353a8"
 	GITCLONELINK="https://github.com/FasterMelee/Ishiiruka"
 	echo "Installing version $FMVERSION!"
 	CONFIGLINK="https://github.com/FasterMelee/FasterMelee-installer/raw/master/config/$FMVERSION-fmconfig.tar.gz"
@@ -134,19 +134,17 @@ mkdir "$FOLDERNAME" && cd "$FOLDERNAME"
 echo "Downloading config files..."
 curl -LO# $CONFIGLINK
 echo "Extracting config files..."
-tar -xzf "$FMVERSION-fmconfig.tar.gz" --totals && rm "$FMVERSION-fmconfig.tar.gz"	
+tar -xzf "$FMVERSION-fmconfig.tar.gz" --checkpoint-action='exec=printf "%d/410 records extracted.\r" $TAR_CHECKPOINT' --totals
+rm "$FMVERSION-fmconfig.tar.gz"
+echo ""
 echo "Downloading tarball..."
 curl -LO# "$GITCLONELINK/archive/$COMMITHASH.tar.gz"
 echo "Extracting tarball..."
-tar -xzf "$COMMITHASH.tar.gz" --totals && rm "$COMMITHASH.tar.gz"
+tar -xzf "$COMMITHASH.tar.gz" --checkpoint-action='exec=printf "%d/12130 records extracted.\r" $TAR_CHECKPOINT' --totals
+rm "$COMMITHASH.tar.gz"
+echo "" #spacing
 mv "Ishiiruka-$COMMITHASH" Ishiiruka
 cd Ishiiruka
-# ---
-
-# --- Temporary patch for updated glibc
-echo "Patching xlocale.h requirement..."
-sed -i "s|#define wxUSE_XLOCALE 1|#define wxUSE_XLOCALE 0|g" Externals/wxWidgets3/wx/wxcocoa.h
-sed -i "s|#define wxUSE_XLOCALE 1|#define wxUSE_XLOCALE 0|g" Externals/wxWidgets3/wx/wxgtk.h
 # ---
 
 # --- Dirty patch for https://bugs.dolphin-emu.org/issues/11047
@@ -155,15 +153,9 @@ sed -i "s|#include <cstring>|#include <cstring>\n#define _XSAVEINTRIN_H_INCLUDED
 # sed -i "s|check_and_add_flag(CXX17 -std=c++17)|#check_and_add_flag(CXX17 -std=c++17)" # issue 2 not present
 # ---
 
-# --- Patch for https://github.com/dolphin-emu/dolphin/pull/6603/files
-echo "Patching AVIDump.cpp..."
-sed -i "s|CODEC_FLAG_GLOBAL_HEADER|AV_CODEC_FLAG_GLOBAL_HEADER|g" Source/Core/VideoCommon/AVIDump.cpp # replace existing objects first
-sed -i "s|#if LIBAVCODEC_VERSION_INT < AV_VERSION_INT(55, 28, 1)|#if LIBAVCODEC_VERSION_INT < AV_VERSION_INT(55, 28, 1)\n#define AV_CODEC_FLAG_GLOBAL_HEADER CODEC_FLAG_GLOBAL_HEADER|g" Source/Core/VideoCommon/AVIDump.cpp # add in define
-# ---
-
 # --- Patch tarball to display correct hash to other netplay clients
 echo "Patching tarball..."
-sed -i "s|\${GIT_EXECUTABLE} rev-parse HEAD|echo 6ababb9222fb8bb9723ae137e1263a27196fcd47|g" CMakeLists.txt  # --set scm_rev_str everywhere to actual commit hash when downloaded
+sed -i "s|\${GIT_EXECUTABLE} rev-parse HEAD|echo $COMMITHASH|g" CMakeLists.txt  # --set scm_rev_str everywhere to actual commit hash when downloaded
 sed -i "s|\${GIT_EXECUTABLE} describe --always --long --dirty|echo FM v$FMVERSION BETA|g" CMakeLists.txt # ensures compatibility w/ netplay
 sed -i "s|\${GIT_EXECUTABLE} rev-parse --abbrev-ref HEAD|echo HEAD|g" CMakeLists.txt
 # ---
