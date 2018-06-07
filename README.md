@@ -19,32 +19,6 @@ Solus (possible list, untested):
 
 `sudo eopkg it libgtk-2-devel libgtk-3-devel wxwidgets-devel libsm-devel gtest-devel llvm-devel lzo-devel mbedtls-devel miniupnpc-devel libxrandr-devel libxi-devel alsa-lib-devel bluez-devel mesalib-devel curl-devel enet-devel libevdev-devel pulseaudio-devel libusb-devel openal-soft-devel portaudio-devel sdl2-devel SFML-devel soundtouch-devel git cmake pkg-config gcc readline-devel libxext-devel libao-devel`
 
-**REQUIRED: Note that your distro may have different names for these packages!**
-* ~~git~~ git is *NOT* required for this build, but is very helpful to have anyway; consider installing it!
-* cmake
-* pkg-config
-* gcc (g++ >= 4.9)
-* libwxbase3.0-dev
-* libwxgtk3.0-dev
-* libgtk2.0-dev
-* libxext-dev
-* libreadline-dev
-* libgl1-mesa-dev
-* libevdev-dev
-* libudev-dev
-* libusb-dev
-
-**OPTIONAL:**
-* libasound-dev
-* libpulse-dev
-* libao-dev
-* libopenal-dev
-* libavcodec-dev
-* libavformat-dev
-* libswscale-dev
-* libbluetooth-dev
-* libxrandr-dev
-
 ## To use:
 
 ```sh
