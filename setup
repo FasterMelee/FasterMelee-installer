@@ -4,6 +4,12 @@
 set -e
 # ---
 
+if [ -f "./setup" ]; then
+	echo "You are running a hosted copy of the script. Please re-download as specified in the README!"
+	exit
+fi
+
+
 # --- Attempts to determine the number of cores in the CPU. ---
 # Source: https://gist.github.com/jj1bdx/5746298
 # Linux and similar...
