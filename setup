@@ -53,6 +53,24 @@ fi
 # --- if custom links aren't defined, prompt to choose a version
 if [ -z "$FMVERSION" ] || [ -z "$COMMITHASH" ] || [ -z "$GITCLONELINK" ] || [ -z "$CONFIGLINK" ]; then #ORs used to ensure everything filled out
 	echo ""
+	echo "Which version of Faster Melee would you like to install? (default: 1)"
+	echo "1.) Latest version (5.9)"
+	echo "2.) 5.8.7"
+	read -r RESP
+	if [ "$RESP" -eq 2 ] 2> /dev/null; then
+	 	FMVERSION="5.0.3"
+		COMMITHASH="d462ca38724db65d7f92f3edbd16b6657291e420"
+		GITCLONELINK="https://github.com/Tinob/Ishiiruka"
+	else
+		FMVERSION="5.7"
+		COMMITHASH="ce994a2cea882bf4d145df87554e43314331cf9a"
+		GITCLONELINK="https://github.com/HannesMann/Ishiiruka"
+	fi
+	echo "Installing version $FMVERSION!"
+CONFIGLINK="https://github.com/Ptomerty/FasterMelee-installer/raw/master/config/$FMVERSION-fmconfig.tar.gz"
+
+
+	echo ""
 	FMVERSION="5.9"
 	COMMITHASH="4a36badb6ff3ed533c26b3b201e6d3673a2353a8"
 	GITCLONELINK="https://github.com/FasterMelee/Ishiiruka"
