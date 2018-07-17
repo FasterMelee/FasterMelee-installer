@@ -69,7 +69,7 @@ if [ -z "$FMVERSION" ] || [ -z "$COMMITHASH" ] || [ -z "$GITCLONELINK" ] || [ -z
 	if [ "$RESP" -eq 2 ] 2> /dev/null; then
 	 	FMVERSION="5.8.7"
 		COMMITHASH="98ebbc166beee649bd23066ce91ba1d88e73861c"
-		CONFIGLINK="https://github.com/Ptomerty/FasterMelee-installer/raw/master/config/legacy/$FMVERSION-fmconfig.tar.gz"
+		CONFIGLINK="https://github.com/FasterMelee/FasterMelee-installer/raw/master/config/legacy/$FMVERSION-fmconfig.tar.gz"
 	else
 		FMVERSION="5.9"
 		COMMITHASH="4a36badb6ff3ed533c26b3b201e6d3673a2353a8"
