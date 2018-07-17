@@ -227,7 +227,7 @@ rm -f ../launch-fm
 # --- create symlink to newly compiled dolphin-emu. if queued, create shortcut.
 echo "Creating shortcuts..."
 ln -s "$FOLDERNAME/bin/dolphin-emu" ../launch-fm
-if [ "$SHORTCUTBOOL" -eq 1 ] && [ -f "~/.local/shapre/applications" ]; then
+if [ "$SHORTCUTBOOL" -eq 1 ] && [ -f "~/.local/share/applications" ]; then
 	rm -f ~/.local/share/applications/faster-melee-$FMVERSION.desktop # remove old shortcut
 	rm -f ~/Desktop/faster-melee-$FMVERSION.desktop
 	touch ~/.local/share/applications/faster-melee-$FMVERSION.desktop # fixes very rare tee bug?
