@@ -5,10 +5,13 @@ set -e
 # ---
 
 if [ -f "./setup" ]; then
-	echo "You are running a hosted copy of the script. Please re-download as specified in the README!"
+	echo "You are running a hosted copy of the script. Please run"
+	echo ""
+	echo "sh -c \"\$(curl -Ls https://github.com/FasterMelee/FasterMelee-installer/raw/master/setup)"
+	echo ""
+	echo "to ensure you have the latest version!"
 	exit
 fi
-
 
 # --- Attempts to determine the number of cores in the CPU. ---
 # Source: https://gist.github.com/jj1bdx/5746298
@@ -30,8 +33,8 @@ CONFIGLINK="" # Packed configs, can be found under config/ or config/legacy/
 # ---
 
 # --- delete all "FasterMelee" folders filled with incomplete installations
-echo "
-Attempting to delete incomplete installations of FM..."
+echo ""
+echo "Attempting to delete incomplete installations of FM..."
 for f in FasterMelee*; do
 	if [ -d "${f}" ] && [ ! -d "$f/bin" ]; then
 		echo "Found incomplete installation at $f/, deleting."
@@ -41,8 +44,8 @@ done
 # ---
 
 # --- ask if you want to delete all remaining FM* folders
-echo "
-Would you like to overwrite ALL of your previous installations? (y/N)"
+echo ""
+echo "Would you like to overwrite ALL of your previous installations? (y/N)"
 read -r RESP
 if [ "$RESP" = "y" ] || [ "$RESP" = "Y" ]; then
 	echo "Are you sure? This action is not reversible! (y/N)"
@@ -60,31 +63,24 @@ fi
 if [ -z "$FMVERSION" ] || [ -z "$COMMITHASH" ] || [ -z "$GITCLONELINK" ] || [ -z "$CONFIGLINK" ]; then #ORs used to ensure everything filled out
 	echo ""
 	echo "Which version of Faster Melee would you like to install? (default: 1)"
-	echo "1.) Latest version (5.9)"
-	echo "2.) 5.8.7"
+	echo "1.) 5.9 (Latest version)"
+	echo "2.) 5.8.7 (Latest PM version)"
 	read -r RESP
 	if [ "$RESP" -eq 2 ] 2> /dev/null; then
-	 	FMVERSION="5.0.3"
-		COMMITHASH="d462ca38724db65d7f92f3edbd16b6657291e420"
-		GITCLONELINK="https://github.com/Tinob/Ishiiruka"
+	 	FMVERSION="5.8.7"
+		COMMITHASH="98ebbc166beee649bd23066ce91ba1d88e73861c"
+		CONFIGLINK="https://github.com/Ptomerty/FasterMelee-installer/raw/master/config/legacy/$FMVERSION-fmconfig.tar.gz"
 	else
-		FMVERSION="5.7"
-		COMMITHASH="ce994a2cea882bf4d145df87554e43314331cf9a"
-		GITCLONELINK="https://github.com/HannesMann/Ishiiruka"
+		FMVERSION="5.9"
+		COMMITHASH="4a36badb6ff3ed533c26b3b201e6d3673a2353a8"
+		CONFIGLINK="https://github.com/FasterMelee/FasterMelee-installer/raw/master/config/$FMVERSION-fmconfig.tar.gz"
+		
 	fi
-	echo "Installing version $FMVERSION!"
-CONFIGLINK="https://github.com/Ptomerty/FasterMelee-installer/raw/master/config/$FMVERSION-fmconfig.tar.gz"
-
-
-	echo ""
-	FMVERSION="5.9"
-	COMMITHASH="4a36badb6ff3ed533c26b3b201e6d3673a2353a8"
 	GITCLONELINK="https://github.com/FasterMelee/Ishiiruka"
 	echo "Installing version $FMVERSION!"
-	CONFIGLINK="https://github.com/FasterMelee/FasterMelee-installer/raw/master/config/$FMVERSION-fmconfig.tar.gz"
 else
-	echo "
-	Attempting to install version $FMVERSION!"
+	echo ""
+	echo "Attempting to install version $FMVERSION!"
 fi
 # ---
 
@@ -177,12 +173,33 @@ sed -i "s|#include <cstring>|#include <cstring>\n#define _XSAVEINTRIN_H_INCLUDED
 # sed -i "s|check_and_add_flag(CXX17 -std=c++17)|#check_and_add_flag(CXX17 -std=c++17)" # issue 2 not present
 # ---
 
-# --- Patch tarball to display correct hash to other netplay clients
-echo "Patching tarball..."
-sed -i "s|\${GIT_EXECUTABLE} rev-parse HEAD|echo $COMMITHASH|g" CMakeLists.txt  # --set scm_rev_str everywhere to actual commit hash when downloaded
-sed -i "s|\${GIT_EXECUTABLE} describe --always --long --dirty|echo FM v$FMVERSION BETA|g" CMakeLists.txt # ensures compatibility w/ netplay
-sed -i "s|\${GIT_EXECUTABLE} rev-parse --abbrev-ref HEAD|echo HEAD|g" CMakeLists.txt
-# ---
+if [ "$FMVERSION" = "5.8.7" ]; then
+	# --- Temporary patch for updated glibc		
+	echo "Patching xlocale.h requirement..."		
+	sed -i "s|#define wxUSE_XLOCALE 1|#define wxUSE_XLOCALE 0|g" Externals/wxWidgets3/wx/wxcocoa.h		
+	sed -i "s|#define wxUSE_XLOCALE 1|#define wxUSE_XLOCALE 0|g" Externals/wxWidgets3/wx/wxgtk.h		
+	# ---
+
+	# --- Patch for https://github.com/dolphin-emu/dolphin/pull/6603/files		
+	echo "Patching AVIDump.cpp..."		
+	sed -i "s|CODEC_FLAG_GLOBAL_HEADER|AV_CODEC_FLAG_GLOBAL_HEADER|g" Source/Core/VideoCommon/AVIDump.cpp # replace existing objects first		
+	sed -i "s|#if LIBAVCODEC_VERSION_INT < AV_VERSION_INT(55, 28, 1)|#if LIBAVCODEC_VERSION_INT < AV_VERSION_INT(55, 28, 1)\n#define AV_CODEC_FLAG_GLOBAL_HEADER CODEC_FLAG_GLOBAL_HEADER|g" Source/Core/VideoCommon/AVIDump.cpp # add in define		
+	# ---
+
+	# --- Patch tarball to display correct hash to other netplay clients
+	echo "Patching tarball..."
+	sed -i "s|\${GIT_EXECUTABLE} rev-parse HEAD|echo 6ababb9222fb8bb9723ae137e1263a27196fcd47|g" CMakeLists.txt  # --set scm_rev_str everywhere to actual commit hash when downloaded
+	sed -i "s|\${GIT_EXECUTABLE} describe --always --long --dirty|echo FM v$FMVERSION BETA|g" CMakeLists.txt # ensures compatibility w/ netplay
+	sed -i "s|\${GIT_EXECUTABLE} rev-parse --abbrev-ref HEAD|echo HEAD|g" CMakeLists.txt
+	# ---
+else	
+	# --- Patch tarball to display correct hash to other netplay clients
+	echo "Patching tarball..."
+	sed -i "s|\${GIT_EXECUTABLE} rev-parse HEAD|echo $COMMITHASH|g" CMakeLists.txt  # --set scm_rev_str everywhere to actual commit hash when downloaded
+	sed -i "s|\${GIT_EXECUTABLE} describe --always --long --dirty|echo FM v$FMVERSION BETA|g" CMakeLists.txt # ensures compatibility w/ netplay
+	sed -i "s|\${GIT_EXECUTABLE} rev-parse --abbrev-ref HEAD|echo HEAD|g" CMakeLists.txt
+	# ---
+fi
 
 # --- move necessary config files into the build folder
 echo "Adding FM config files..."
@@ -210,7 +227,7 @@ rm -f ../launch-fm
 # --- create symlink to newly compiled dolphin-emu. if queued, create shortcut.
 echo "Creating shortcuts..."
 ln -s "$FOLDERNAME/bin/dolphin-emu" ../launch-fm
-if [ "$SHORTCUTBOOL" -eq 1 ]; then
+if [ "$SHORTCUTBOOL" -eq 1 ] && [ -f "~/.local/shapre/applications" ]; then
 	rm -f ~/.local/share/applications/faster-melee-$FMVERSION.desktop # remove old shortcut
 	rm -f ~/Desktop/faster-melee-$FMVERSION.desktop
 	touch ~/.local/share/applications/faster-melee-$FMVERSION.desktop # fixes very rare tee bug?
@@ -227,12 +244,14 @@ Name=$FMNAME
 Exec=$EXEPATH/dolphin-emu" | tee ~/.local/share/applications/faster-melee-$FMVERSION.desktop > /dev/null
 	cp ~/.local/share/applications/faster-melee-$FMVERSION.desktop ~/Desktop
 	chmod +x ~/Desktop/faster-melee-$FMVERSION.desktop
+else
+	echo ".local folder not found, skipping desktop shortcut."
 fi
 # ---
 
 echo ""
-echo "*******************************************************************************************"
+echo "***************************************************************************************************"
 echo "Done! Run ./launch-fm to run the latest installed version!"
 echo "Alternatively, go to Application > Games or your desktop and select the desired version."
-echo "Make sure to unplug and replug your adapter before opening Dolphin if rules were installed!"
-echo "*******************************************************************************************"
+echo "Make sure to unplug and replug your adapter before opening Dolphin if adapter rules were installed!"
+echo "***************************************************************************************************"
