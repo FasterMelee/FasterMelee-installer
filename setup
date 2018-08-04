@@ -5,7 +5,7 @@ set -e
 # ---
 
 if [ -f "./setup" ]; then
-	echo "You are running a hosted copy of the script. Please run"
+	echo "You are running a hosted copy of the script. Please *delete the local file 'setup'* and run"
 	echo ""
 	echo "sh -c \"\$(curl -Ls https://github.com/FasterMelee/FasterMelee-installer/raw/master/setup)"
 	echo ""
