@@ -192,6 +192,11 @@ if [ "$FMVERSION" = "5.8.7" ]; then
 	sed -i "s|\${GIT_EXECUTABLE} describe --always --long --dirty|echo FM v$FMVERSION BETA|g" CMakeLists.txt # ensures compatibility w/ netplay
 	sed -i "s|\${GIT_EXECUTABLE} rev-parse --abbrev-ref HEAD|echo HEAD|g" CMakeLists.txt
 	# ---
+	
+	# --- Patch for SoundTouch
+	echo "Using static soundtouch from Externals..."
+	sed -i 's|message("Using shared soundtouch")|add_subdirectory(Externals/soundtouch)\n\tinclude_directories(Externals)|g' CMakeLists.txt #uses external soundtouch lib
+	# ---
 else	
 	# --- Patch tarball to display correct hash to other netplay clients
 	echo "Patching tarball..."
