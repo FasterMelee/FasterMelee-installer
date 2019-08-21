@@ -3,8 +3,9 @@
 # --- Stops the script if errors are encountered. ---
 set -e
 # ---
+#
 
-if [ -f "./setup" ]; then
+if [ -f "./setup" ] && [ -z "${IN_NIX_SHELL++}" ]; then
 	echo "You are running a hosted copy of the script. Please *delete the local file 'setup'* and run"
 	echo ""
 	echo "sh -c \"\$(curl -Ls https://github.com/FasterMelee/FasterMelee-installer/raw/master/setup)"
@@ -113,10 +114,18 @@ echo "
 Would you like to install udev rules for your Wii U adapter? (y/N) (Necessary for reduced-lag direct adapter connection)"
 read -r RESP
 if [ "$RESP" = "y" ] || [ "$RESP" = "Y" ]; then
-	sudo rm -f /etc/udev/rules.d/51-gcadapter.rules # remove even if doesn't exist
-	echo 'SUBSYSTEM=="usb", ENV{DEVTYPE}=="usb_device", ATTRS{idVendor}=="057e", ATTRS{idProduct}=="0337", MODE="0666"' | sudo tee /etc/udev/rules.d/51-gcadapter.rules > /dev/null # pipe to write-protected file, remove STDOUT
-	sudo udevadm control --reload-rules
-	echo "Rules added!"
+	if [ ! -z "${IN_NIX_SHELL++}" ]; then
+		echo "please add services.udev.extraRules = ''"
+		echo 'SUBSYSTEM=="usb", ENV{DEVTYPE}=="usb_device", ATTRS{idVendor}=="057e", ATTRS{idProduct}=="0337", MODE="0666";'
+		echo 'SUBSYSTEMS=="usb", ATTRS{idVendor}=="1209", ATTRS{idProduct}=="2300", SYMLINK+="model01", ENV{ID_MM_DEVICE_IGNORE}:="1", ENV{ID_MM_CANDIDATE}:="0";'
+		echo 'SUBSYSTEMS=="usb", ATTRS{idVendor}=="1209", ATTRS{idProduct}=="2301", SYMLINK+="model01", ENV{ID_MM_DEVICE_IGNORE}:="1", ENV{ID_MM_CANDIDATE}:="0";'
+		echo "'';"
+	else
+		sudo rm -f /etc/udev/rules.d/51-gcadapter.rules # remove even if doesn't exist
+		echo 'SUBSYSTEM=="usb", ENV{DEVTYPE}=="usb_device", ATTRS{idVendor}=="057e", ATTRS{idProduct}=="0337", MODE="0666"' | sudo tee /etc/udev/rules.d/51-gcadapter.rules > /dev/null # pipe to write-protected file, remove STDOUT
+		sudo udevadm control --reload-rules
+		echo "Rules added!"
+	fi
 else
 	echo "No changes made!"
 fi
@@ -215,7 +224,11 @@ mv ../Data/dolphin-emu.png Binaries/
 
 # --- cmake and compile
 echo "cmaking..."
-cmake .. -DLINUX_LOCAL_DEV=true
+if [ ! -z "${IN_NIX_SHELL++}" ]; then
+	cmake .. -DLINUX_LOCAL_DEV=true -DGTK2_GLIBCONFIG_INCLUDE_DIR=${glib.out}/lib/glib-2.0/include -DGTK2_GDKCONFIG_INCLUDE_DIR=${gtk2}/lib/gtk-2.0/include -DGTK2_INCLUDE_DIRS=${gtk2}/lib/gtk-2.0 -DENABLE_LTO=True
+else
+	cmake .. -DLINUX_LOCAL_DEV=true
+fi
 echo "Compiling..."
 make -j $CPUS -s
 # ---
