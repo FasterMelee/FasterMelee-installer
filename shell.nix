@@ -2,10 +2,10 @@ with import <nixpkgs> {};
 stdenv.mkDerivation {
 
   name = "fasterMelee";
-  glib.out=pkgs.glib.out;
-  gtk2=pkgs.gtk2;
 
   enableParallelBuilding = true;
+  gtk2 = pkgs.gtk2;
+  glib = pkgs.glib.out;
 
   nativeBuildInputs = [ pkgconfig cmake ];
   buildInputs = [ pkgconfig bluez ffmpeg libao libGLU_combined gtk2 gtk3 glib
@@ -13,5 +13,4 @@ stdenv.mkDerivation {
   libevdev xorg.libXdmcp portaudio libusb libpulseaudio libudev gnumake wget
   wxGTK31 soundtouch miniupnpc mbedtls curl lzo sfml enet xdg_utils hidapi  ];
 
-  FASTER_MELEE_IS_NIX = "true";
 }

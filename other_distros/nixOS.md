@@ -1,5 +1,9 @@
 # nixOS Installation Guide
 
+### 1. run nix-shell in the project root
+
+### 2. run the setup script
+
 ### 1. Adapter support
 Add this snippet to /etc/nixos/configuration.nix:
 ```
