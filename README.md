@@ -11,7 +11,7 @@ For most users, see [this page](https://wiki.dolphin-emu.org/index.php?title=Bui
 
 NixOS: 
 
-See [attached README, written by fletchers#4892](./other_distros/nixOS.md)
+See [attached README, written by fletchers#4892](./other_distros/NixOS/INSTALL.md)
 
 Fedora:
 
