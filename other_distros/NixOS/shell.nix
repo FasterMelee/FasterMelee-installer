@@ -2,10 +2,10 @@ with import <nixpkgs> {};
 stdenv.mkDerivation {
 
   name = "fasterMelee";
-  glib=pkgs.glib;
-  gtk2=pkgs.gtk2;
 
   enableParallelBuilding = true;
+  gtk2 = pkgs.gtk2;
+  glib = pkgs.glib.out;
 
   nativeBuildInputs = [ pkgconfig cmake ];
   buildInputs = [ pkgconfig bluez ffmpeg libao libGLU_combined gtk2 gtk3 glib

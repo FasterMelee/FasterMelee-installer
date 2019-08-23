@@ -2,7 +2,7 @@
 
 A script for compiling Faster Melee on Linux. Current Version: **5.9**
 
-Currently tested on Arch, Ubuntu, centOS 7.3, and others, but should work across *all* distributions given the right dependencies. Older versions can be found under `config/legacy/`.
+Currently tested on Arch, Ubuntu, centOS 7.3, NixOS 19.03, and others, but should work across *all* distributions given the right dependencies. Older versions can be found under `config/legacy/`.
 
 [Join the official Faster Melee Discord Channel for support!](https://discord.gg/fastermelee)
 
@@ -11,7 +11,7 @@ For most users (including Fedora 24+), see [this page](https://wiki.dolphin-emu.
 
 NixOS: 
 
-See [attached README, written by fletchers#4892](./nixOS.md)
+See [attached README, written by fletchers#4892](./other_distros/NixOS/INSTALL.md)
 
 Solus (possible list, untested):
 
