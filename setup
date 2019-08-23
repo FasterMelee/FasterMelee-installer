@@ -207,6 +207,18 @@ if [ "$FMVERSION" = "5.8.7" ]; then
 	sed -i 's|message("Using shared soundtouch")|add_subdirectory(Externals/soundtouch)\n\tinclude_directories(Externals)|g' CMakeLists.txt #uses external soundtouch lib
 	# ---
 else	
+    # --- Patch for https://github.com/FasterMelee/Ishiiruka/pull/4/commits/8d161226ab915be09c951957505da61c217b1b1b
+	echo "Patching FileUtil.cpp..."
+	sed -i "s|#include <fcntl.h>|#include <fcntl.h>\n#include <fstream>|g" Source/Core/Common/FileUtil.cpp # add in include
+	sed -i '/\/\/ copies file srcFilename to destFilename, returns true on success/d' Source/Core/Common/FileUtil.cpp # update variable names
+	sed -i "s|bool Copy(const std::string& srcFilename, const std::string& destFilename)|\/\/ copies file source_path to destination_path, returns true on success\nbool Copy(const std::string\& source_path, const std::string\& destination_path)|g" Source/Core/Common/FileUtil.cpp # update variable names
+	sed -i 's|INFO_LOG(COMMON, "Copy: %s --> %s", srcFilename.c_str(), destFilename.c_str());|INFO_LOG(COMMON, "Copy: %s --> %s", source_path.c_str(), destination_path.c_str());|g' Source/Core/Common/FileUtil.cpp # update variable names
+	sed -i "s|if (CopyFile(UTF8ToTStr(srcFilename).c_str(), UTF8ToTStr(destFilename).c_str(), FALSE))|if (CopyFile(UTF8ToTStr(source_path).c_str(), UTF8ToTStr(destination_path).c_str(), FALSE))|g" Source/Core/Common/FileUtil.cpp # update variable names
+	sed -i 's|ERROR_LOG(COMMON, "Copy: failed %s --> %s: %s", srcFilename.c_str(), destFilename.c_str(),|ERROR_LOG(COMMON, "Copy: failed %s --> %s: %s", source_path.c_str(), destination_path.c_str(),|g' Source/Core/Common/FileUtil.cpp # update variable names
+	sed -i "315,361d" Source/Core/Common/FileUtil.cpp # remove old copy method
+	sed -i "314istd::ifstream source{source_path, std::ios::binary};\nstd::ofstream destination{destination_path, std::ios::binary};\ndestination << source.rdbuf();\nreturn source.good() && destination.good();" Source/Core/Common/FileUtil.cpp # add new copy method
+	# ---
+
 	# --- Patch tarball to display correct hash to other netplay clients
 	echo "Patching tarball..."
 	sed -i "s|\${GIT_EXECUTABLE} rev-parse HEAD|echo 4a36badb6ff3ed533c26b3b201e6d3673a2353a8|g" CMakeLists.txt  # --set scm_rev_str everywhere to actual commit hash when downloaded
