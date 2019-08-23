@@ -7,15 +7,11 @@ Currently tested on Arch, Ubuntu, centOS 7.3, and others, but should work across
 [Join the official Faster Melee Discord Channel for support!](https://discord.gg/fastermelee)
 
 ## Dependencies needed (install these first!)
-For most users, see [this page](https://wiki.dolphin-emu.org/index.php?title=Building_Dolphin_on_Linux) for an easy to install list of dependencies; otherwise, see below.
+For most users (including Fedora 24+), see [this page](https://wiki.dolphin-emu.org/index.php?title=Building_Dolphin_on_Linux) for an easy to install list of dependencies; otherwise, see below.
 
 NixOS: 
 
 See [attached README, written by fletchers#4892](./nixOS.md)
-
-Fedora:
-
-`dnf install cmake git gcc-c++ libXext-devel libgudev gtk+-devel wxGTK-devel systemd-devel openal-soft-devel libevdev-devel libao-devel SOIL-devel libXrandr-devel pulseaudio-libs-devel bluez-libs-devel libusb-devel`
 
 Solus (possible list, untested):
 
