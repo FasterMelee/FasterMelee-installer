@@ -31,7 +31,6 @@ let
         config="$XDG_CONFIG_HOME"
     fi
     if [ ! -d $config/fastermelee ] ; then
-       echo cp
         mkdir -p $config
         cp -r ${fastermelee-dolphin}/share/dolphin-emu/user $config/fastermelee
         chmod -R +w $config/fastermelee
