@@ -1,4 +1,4 @@
-There are 3 ways to install fastermelee on nixos:
+There are 3 ways to install fastermelee on nixos. To install version 5.8.7, replace every instance of 5.9 with 5.8.7 and 5-9 with 5-8-7.
 
 1. To install locally, just run `nix-shell` in this directory then execute the setup script
 
