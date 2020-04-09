@@ -16,12 +16,12 @@ let
     if [ ! -z "$XDG_CONFIG_HOME" ]; then
         config="$XDG_CONFIG_HOME"
     fi
-    if [ ! -d $config ] ; then
+    if [ ! -d $config/fastermelee ] ; then
         mkdir -p $config
         cp -r ${fastermelee-dolphin}/share/dolphin-emu/user $config/fastermelee
         chmod -R +w $config/fastermelee
     fi
-    ${fastermelee-dolphin}/bin/fastermelee -u $config/fastermelee
+    ${fastermelee-dolphin}/bin/fastermelee -u $config/fastermelee $@
   '';
 
 
@@ -30,16 +30,20 @@ let
     if [ ! -z "$XDG_CONFIG_HOME" ]; then
         config="$XDG_CONFIG_HOME"
     fi
-    if [ ! -d $config ] ; then
+    if [ ! -d $config/fastermelee ] ; then
+       echo cp
         mkdir -p $config
         cp -r ${fastermelee-dolphin}/share/dolphin-emu/user $config/fastermelee
         chmod -R +w $config/fastermelee
     fi
-    ${fastermelee-dolphin}/bin/fastermelee-nogui -u $config/fastermelee
+    echo $config
+    ${fastermelee-dolphin}/bin/fastermelee-nogui $@
   '';
 
-  fasterMeleeConfig = builtins.fetchTarball
-    https://github.com/FasterMelee/FasterMelee-installer/raw/master/config/5.9-fmconfig.tar.gz;
+  fasterMeleeConfig = builtins.fetchTarball {
+    url = https://github.com/FasterMelee/FasterMelee-installer/raw/master/config/5.9-fmconfig.tar.gz;
+    sha256 = "1vs2fk5dpqlpb5sbrn6hc88pmdrlgif30vaf8g3nb7lrb4f6i8q6";
+  };
 
   sysDir = if sys== null then
              "${fasterMeleeConfig}/Sys"
@@ -55,7 +59,7 @@ let
 
   fastermelee-dolphin = stdenv.mkDerivation rec {
     name = "FasterMelee-base";
-    version = "v5.9b";
+    version = "5.9";
 
     src = fetchFromGitHub {
       owner  = "FasterMelee";
