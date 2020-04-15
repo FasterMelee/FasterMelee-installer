@@ -1,0 +1,31 @@
+#!/bin/sh
+echo "Patching xgetbv function..."
+sed -i "s|#include <cstring>|#include <cstring>\n#define _XSAVEINTRIN_H_INCLUDED|g" Source/Core/Common/x64CPUDetect.cpp # issue 1
+# sed -i "s|check_and_add_flag(CXX17 -std=c++17)|#check_and_add_flag(CXX17 -std=c++17)" # issue 2 not present
+# ---
+# --- Patch for https://github.com/FasterMelee/Ishiiruka/pull/4/commits/8d161226ab915be09c951957505da61c217b1b1b
+echo "Patching FileUtil.cpp..."
+sed -i "s|#include <fcntl.h>|#include <fcntl.h>\n#include <fstream>|g" Source/Core/Common/FileUtil.cpp # add in include
+sed -i '/\/\/ copies file srcFilename to destFilename, returns true on success/d' Source/Core/Common/FileUtil.cpp # update variable names
+sed -i "s|bool Copy(const std::string& srcFilename, const std::string& destFilename)|\/\/ copies file source_path to destination_path, returns true on success\nbool Copy(const std::string\& source_path, const std::string\& destination_path)|g" Source/Core/Common/FileUtil.cpp # update variable names
+sed -i 's|INFO_LOG(COMMON, "Copy: %s --> %s", srcFilename.c_str(), destFilename.c_str());|INFO_LOG(COMMON, "Copy: %s --> %s", source_path.c_str(), destination_path.c_str());|g' Source/Core/Common/FileUtil.cpp # update variable names
+sed -i "s|if (CopyFile(UTF8ToTStr(srcFilename).c_str(), UTF8ToTStr(destFilename).c_str(), FALSE))|if (CopyFile(UTF8ToTStr(source_path).c_str(), UTF8ToTStr(destination_path).c_str(), FALSE))|g" Source/Core/Common/FileUtil.cpp # update variable names
+sed -i 's|ERROR_LOG(COMMON, "Copy: failed %s --> %s: %s", srcFilename.c_str(), destFilename.c_str(),|ERROR_LOG(COMMON, "Copy: failed %s --> %s: %s", source_path.c_str(), destination_path.c_str(),|g' Source/Core/Common/FileUtil.cpp # update variable names
+sed -i "315,361d" Source/Core/Common/FileUtil.cpp # remove old copy method
+sed -i "314istd::ifstream source{source_path, std::ios::binary};\nstd::ofstream destination{destination_path, std::ios::binary};\ndestination << source.rdbuf();\nreturn source.good() && destination.good();" Source/Core/Common/FileUtil.cpp # add new copy method
+# ---
+
+# --- Patch WxUtils regarding https://github.com/FasterMelee/FasterMelee-installer/issues/58
+echo "Patching WxUtils.cpp..."
+sed -i "s|screen_geometry = wxDisplay(0).GetClientArea();|screen_geometry = wxDisplay((unsigned int) 0).GetClientArea();|g" Source/Core/DolphinWX/WxUtils.cpp # avoid ambiguous overloaded function call
+sed -i 's|default_size.SetDefaults(wxDisplay(0).GetClientArea().GetSize() / 2);|default_size.SetDefaults(wxDisplay((unsigned int) 0).GetClientArea().GetSize() / 2);|g' Source/Core/DolphinWX/WxUtils.cpp # avoid ambiguous overloaded function call
+#   ---
+
+# --- Patch tarball to display correct hash to other netplay clients
+echo "Patching tarball..."
+sed -i "s|\${GIT_EXECUTABLE} rev-parse HEAD|echo 4a36badb6ff3ed533c26b3b201e6d3673a2353a8|g" CMakeLists.txt  # --set scm_rev_str everywhere to actual commit hash when downloaded
+sed -i "s|\${GIT_EXECUTABLE} describe --always --long --dirty|echo FM v$FMVERSION BETA|g" CMakeLists.txt # ensures compatibility w/ netplay
+sed -i "s|\${GIT_EXECUTABLE} rev-parse --abbrev-ref HEAD|echo HEAD|g" CMakeLists.txt
+# ---
+echo "patching cubeb"
+sed -i "s|install(DIRECTORY \${CMAKE_SOURCE_DIR}/include DESTINATION \${CMAKE_INSTALL_PREFIX})|install(DIRECTORY \${CMAKE_CURRENT_SOURCE_DIR}/include DESTINATION \${CMAKE_INSTALL_PREFIX})|g" Externals/cubeb/CMakeLists.txt

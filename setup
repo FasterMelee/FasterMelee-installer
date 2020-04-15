@@ -195,6 +195,13 @@ sed -i "314istd::ifstream source{source_path, std::ios::binary};\nstd::ofstream 
 # ---
 
 
+# --- Patch WxUtils regarding https://github.com/FasterMelee/FasterMelee-installer/issues/58
+echo "Patching WxUtils.cpp..."
+sed -i "s|screen_geometry = wxDisplay(0).GetClientArea();|screen_geometry = wxDisplay((unsigned int) 0).GetClientArea();|g" Source/Core/DolphinWX/WxUtils.cpp # avoid ambiguous overloaded function call
+sed -i 's|default_size.SetDefaults(wxDisplay(0).GetClientArea().GetSize() / 2);|default_size.SetDefaults(wxDisplay((unsigned int) 0).GetClientArea().GetSize() / 2);|g' Source/Core/DolphinWX/WxUtils.cpp # avoid ambiguous overloaded function call
+# ---
+
+
 if [ "$FMVERSION" = "5.8.7" ]; then
 	# --- Temporary patch for updated glibc		
 	echo "Patching xlocale.h requirement..."		
@@ -219,13 +226,8 @@ if [ "$FMVERSION" = "5.8.7" ]; then
 	echo "Using static soundtouch from Externals..."
 	sed -i 's|message("Using shared soundtouch")|add_subdirectory(Externals/soundtouch)\n\tinclude_directories(Externals)|g' CMakeLists.txt #uses external soundtouch lib
 	# ---
-else	
-	# --- Patch WxUtils regarding https://github.com/FasterMelee/FasterMelee-installer/issues/58
-	echo "Patching WxUtils.cpp..."
-        sed -i "s|screen_geometry = wxDisplay(0).GetClientArea();|screen_geometry = wxDisplay((unsigned int) 0).GetClientArea();|g" Source/Core/DolphinWX/WxUtils.cpp # avoid ambiguous overloaded function call
-        sed -i 's|default_size.SetDefaults(wxDisplay(0).GetClientArea().GetSize() / 2);|default_size.SetDefaults(wxDisplay((unsigned int) 0).GetClientArea().GetSize() / 2);|g' Source/Core/DolphinWX/WxUtils.cpp # avoid ambiguous overloaded function call
-	# ---
 
+else
 	# --- Patch tarball to display correct hash to other netplay clients
 	echo "Patching tarball..."
 	sed -i "s|\${GIT_EXECUTABLE} rev-parse HEAD|echo 4a36badb6ff3ed533c26b3b201e6d3673a2353a8|g" CMakeLists.txt  # --set scm_rev_str everywhere to actual commit hash when downloaded
